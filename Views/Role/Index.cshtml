@@ -1,0 +1,54 @@
+﻿@* Modified view code from: https://asp.mvc-tutorial.com/working-with-databases/todo-list-the-view/ *@
+@model BugTracker.ViewModels.RoleViewModel
+
+
+
+
+<h1>Manage Roles</h1>
+<table class="table table-striped table-bordered table-hover" style="max-width: 500px;">
+    <tr><td colspan="3">
+        @* Create roles field *@
+        @using (var form = Html.BeginForm("Create", "Role", FormMethod.Post))
+        {
+            //@Html.HiddenFor(model => model.EditableItem.Id)
+            <div class="input-group">
+                @* Textbox *@
+                @Html.TextBoxFor(model => model.currRole, new { @class = "form-control" })
+
+                @* Create button *@
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-success">Create</button>
+                </div>
+            </div>
+            @Html.ValidationSummary()
+        }
+    </td></tr>
+
+    @* Role list *@
+    @if (Model.roleList.Count != 0)
+     {
+        @foreach (var item in Model.roleList)
+         {
+            <tr>
+                @* Role Name, Rename Btn, Delete Btn *@
+                <td>
+                    @item.Name
+                </td>
+
+                <td class="text-center">
+                    <a href="/Role/Update/@item.Id" class="btn btn-sm btn-primary">Rename</a>
+                </td>
+
+                <td class="text-center">
+                    <a href="/Role/Delete/@item.Id" onclick="return confirm('Are you sure?');" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+         }
+     }
+    else
+    {
+        <tr><td>
+            Looks like there are no roles!
+        </td></tr>
+    }
+</table>

@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+    @* Bootstrap v4 css (js in body) *@
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    @* Spur Template *@
+    <script src="~/lib/spur/dist/js/chart-js-config.js"></script>
+    <link href="~/lib/spur/dist/css/spur.css" rel="stylesheet" />
+
+    @* Nice icons and fonts *@
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:400,600|Open+Sans:400,600,700" rel="stylesheet">
+
+    @* Custom css *@
+    <link rel="stylesheet" href="~/css/site.css" />
+
+    <title>@ViewData["Title"]</title>
+</head>
+<body>
+    <p>This is the Identity layout</p>
+    <div class="container">
+        <main role="main">
+            @RenderBody()
+        </main>
+    </div>
+
+    @* jQuery Framework *@
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    @* Popper (nice popups) *@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+
+    @* Bootstrap v4 js *@
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    @* Spur Template js *@
+    <script src="~/lib/spur/js/spur.js"></script>
+
+    @* Custom js *@
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
+

@@ -1,0 +1,137 @@
+﻿07/19/2021 6:10 PM
+Created a basic ASP.NET MVC project.
+
+07/19/2021 6:20 PM
+Added Runtime Razor pages
+	- seached and installed Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation v3 package
+	- in ConfigureServices() of Startup.cs added: services.AddControllersWithViews().AddRazorRuntimeCompilation();
+	Now we can see live changes to the view when refreshing.
+
+07/19/2021 6:30 PM
+Added Razor pages
+	- in ConfigureServices() of Startup.cs added:
+		services.AddRazorPages(); // under services.AddControllersWithViews();
+	- in Configure() of Startup.cs added:
+		app.UseAuthentication(); // above app.UseAuthorization();
+		and in app.UseEndpoints( enpoints => { ... }
+			endpoints.MapRazorPages(); // as the last item
+	Now we can use razor pages with the urls all mapped.
+
+07/19/2021 7:30 PM
+added ASP.NET Core Identity (Account Managment) 
+	in ~/Views/Shared
+		create _IdentityLayout.cshtml
+	add a Scaffolded Item of type Identity
+		select the Layout just made
+		select any pages to customize
+		create a new Data Context and User classes
+	in ~/Areas/Identity/Data/BugTracketUser.cs
+		created custom properties, added schema annotations, and data annotations (for validation):
+			[PersonalData]
+			[Column(TypeName ="VARCHAR(20)")]
+			[MaxLength(20)]
+			public string FirstName { get; set; }
+			[PersonalData]
+			[Column(TypeName = "VARCHAR(20)")]
+			[MaxLength(20)]
+			public string LastName { get; set; }
+	in ConnectionStrings of ~/appsetting.json change: Database=BugTracker to Database=BugTrackerDevDB
+	in Package Manager Console: 
+		Add-Migration "CreateIdentitySchema"
+		Update-Database
+	Now we can take advantage of the built-in Account system for regestering new users as well as login in current ones.
+
+07/19/2021 7:40 PM
+run my database script to create my tables.
+	right click on BugTrackerDevDB and select New Query
+	copy paste code from MyDatabasev2.sql (only the create portion)
+
+07/19/2021 7:45 PM
+Added Dapper
+	in Package Manager Console:
+		Install-Package Dapper
+		Install-Package Dapper.Contrib
+	Now we can use the database framework, Dapper, to write SQL command to get the data (yay I get to do the fun stuff)
+
+07/19/2021 7:56 PM
+-Create a DbHelper in order to comunicate with the DB
+	in ~/Helpers
+		create DbHelper.cs
+		add this method:
+			public static SqlConnection GetConnection() {
+				return new SqlConnection(@"connection string you're using here");
+	Now we can use this helper class to write query commands (SQL).
+
+
+07/20/2021 2:19 PM
+in ~/Controllers/HomeController.cs 
+	added [Authorize] above the class
+	Now we need to sign in to access the HomeController
+
+07/21/2021 9:19 AM
+Created BTUserModel & ProjectModel
+Properties based on schema
+	Now we can begin making the regestration make a BTUser as well as the register account.
+
+07/21/2021 9:36 AM
+Added Spur Admin Template
+
+07/21/2021 9:49 AM
+Changed Login.cshtml, Register.cshtml, and IdentityLayout to work with spur
+
+07/21/2021 11:04 AM
+Made the regestration make you enter a username
+	Changed the input model in Register.cshtml Added:
+		[Required]
+        [DataType(DataType.Text)]
+        [Display(Name = "Username")]
+        public string UserName { get; set; }
+	Added a Username feild in view
+	Now a Usernameis mandated at registration
+
+07/21/2021 12:08 PM
+struggle
+	problem: connecting to the DB 
+	cause: turns out that method Insert<T> from Dapper.Contrib affects "Ts" table
+	solution: my solution was to rename my model BTUser and the table BTUsers
+struggle
+	problem: The admin property on BTUsers was referenceing a user with the id of -1 (doesn't exist)
+	cause: Dapper.Contrib's Insert<T> is too abstracted
+	solution: map it myself using Dapper's Execute() (this was easier than I thought)
+	Now in the registration process has the BTUsers Table updated with ASP Identity
+
+
+07/22/2021 2:00 PM
+struggle
+	problem: How to create roles
+	cause: documentation says it depends
+	solution: manage roles in the application
+
+07/22/2021 3:43 PM
+Made a view for Managing Roles
+
+07/22/2021 8:39 PM
+Created the viewmodel and Controller for Roles
+
+
+
+
+TODO
+Manage roles
+model
+controller
+view
+
+Add validations to login
+
+Add Role Based Authorization
+Make an Admin Only page
+
+create my models
+	Assignment
+	Ticket
+	ClosedTicket
+	Comments
+
+Create the views 
+

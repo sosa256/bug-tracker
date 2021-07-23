@@ -1,0 +1,119 @@
+﻿@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+
+
+@* Default Login Page
+        TODO:
+         - User forgot password
+         - Sign in with a different service
+
+    <div class="row">
+
+                <div class="col-md-4">
+                    <section>
+                        <form id="account" method="post">
+                            <!-- The input fields are done
+                                like username, password, remember me-->
+
+
+
+
+                            <div class="form-group">
+                                <p>
+                                    <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
+                                </p>
+                                <p>
+                                    <!-- Register as new user here -->
+                                </p>
+                            </div>
+                        </form>
+                    </section>
+                </div>
+
+                <div class="col-md-6 col-md-offset-2">
+                    <section>
+                        <h4>Use another service to log in.</h4>
+
+                        <hr />
+
+                        @{
+                            if ((Model.ExternalLogins?.Count ?? 0) == 0)
+                            {
+                                <div>
+                                    <p>
+                                        There are no external authentication services configured. See <a href="https://go.microsoft.com/fwlink/?LinkID=532715">this article</a>
+                                        for details on setting up this ASP.NET application to support logging in via external services.
+                                    </p>
+                                </div>
+                            }
+                            else
+                            {
+                                <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                                    <div>
+                                        <p>
+                                            @foreach (var provider in Model.ExternalLogins)
+                                            {
+                                                <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+                                            }
+                                        </p>
+                                    </div>
+                                </form>
+                            }
+                        }
+                    </section>
+                </div>
+        </div>*@
+
+
+@* Custom Login Page *@
+<div class="form-screen">
+    <h1>@ViewData["Title"]</h1>
+    <div class="card account-dialog">
+        <div class="card-header bg-primary text-white"> Please log in </div>
+        <div class="card-body">
+
+
+            <form id="account" method="post">
+                @*<div asp-validation-summary="All" class="text-danger"></div>*@
+
+                @* UserName field *@
+                <div class="form-group">
+                    <input asp-for="Input.UserName" class="form-control" placeholder="Enter username" />
+                    <span asp-validation-for="Input.UserName" class="text-danger"></span>
+                </div>
+
+                @* Password field *@
+                <div class="form-group">
+                    <input asp-for="Input.Password" class="form-control" placeholder="Password" />
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                </div>
+
+                @* "Remember Me" checkbox *@
+                <div class="form-group">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" asp-for="Input.RememberMe">
+                        <label class="custom-control-label" asp-for="Input.RememberMe">
+                            @Html.DisplayNameFor(m => m.Input.RememberMe)
+                        </label>
+                    </div>
+                </div>
+
+                @* Login button and register link *@
+                <div class="account-dialog-actions">
+                    <button type="submit" class="btn btn-primary">Login</button>
+                    <a class="account-dialog-link" asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
