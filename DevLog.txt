@@ -113,25 +113,55 @@ Made a view for Managing Roles
 07/22/2021 8:39 PM
 Created the viewmodel and Controller for Roles
 
+07/23/2021 12:28 PM
+Git is now used for version control
+
+07/24/2021 5:30 PM
+Created a role assignment view
+
+07/24/2021 6:04 PM
+Used tag helpers to create a dropdown select
+	made BTUserRoles enum
+
+07/24/2021 7:23 PM
+Made an update role button that works
+
+07/24/2021 9:55 PM
+discovered Microsoft.AspNetCore.Identity.AspNetRoleManager too late :^(
+
+07/25/2021 2:16 PM
+In IdentityHostingStartup.cs
+	added .AddRoles<IdentityRole>() so that I could use the role stuff in userManager
+In Resgister.cshtml
+	Discovered and fixed a security issue (sql injection)
+	used the userManager to add new user to 'NoRole' role by default.
+	Tested Role Based Authorization; it works :^) 
+
+07/25/2021 2:47 PM
+In RoleController.cs
+	Changed queries to parameterized queries for security
+	Made myDB and the IdentityDB in sync
+	Role Based Authorization is ready to be used
+
 
 
 
 TODO
-Manage roles
-model
-controller
-view
+use spur to make things look nice
+
+in RoleController use the view models correctly by haveing the action have the model as a parameter
+
+make create role action inaccessible
+make role assignment only for Administrator role
 
 Add validations to login
 
-Add Role Based Authorization
-Make an Admin Only page
+populate BTUsers (10 users)
+Manage roles on users
+	add roles to users
 
-create my models
-	Assignment
-	Ticket
-	ClosedTicket
-	Comments
+create project controller and view
+create bug ticket m,v, and c
+	and all the other models to supplement it
 
-Create the views 
-
+use https://www.datatables.net/ for nice DB tables

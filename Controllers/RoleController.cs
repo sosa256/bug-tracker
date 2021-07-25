@@ -1,10 +1,16 @@
-﻿using BugTracker.Data;
+﻿using BugTracker.Areas.Identity.Data;
+using BugTracker.Data;
 using BugTracker.Helpers;
+using BugTracker.Models;
 using BugTracker.ViewModels;
+using Dapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace BugTracker.Controllers
 {
@@ -13,29 +19,79 @@ namespace BugTracker.Controllers
         // PROPERTIES
         private SqlConnection _db;
         private readonly BugTrackerContext _dbIdentity;
+        private readonly UserManager<BugTrackerUser> _userManager;
+
+
 
 
         // CONSTRUCTORS
-        public RoleController(BugTrackerContext context)
+        public RoleController(UserManager<BugTrackerUser> userManager, BugTrackerContext context)
         {
+            _userManager = userManager;
             _db = DbHelper.GetConnection();
             _dbIdentity = context;
         }
 
 
-        // METHODS
-        // GET: RoleController
-        public ActionResult Index()
+
+
+        // ACTIONS / METHODS
+
+        // Role Assignment
+        // GET: Role/Assignment
+        [HttpGet]
+        public ActionResult Assignment()
+        {
+            // Get all the users.
+            RoleAssignmentViewModel pizza = new RoleAssignmentViewModel()
+            {
+                userList = _db.Query<BTUser>("SELECT * FROM BTUsers").ToList()
+            };
+
+            return View(pizza);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> RoleUpdateAsync(IFormCollection collection)
+        {
+            string currUserId = collection["item.Id"].ToString();
+            int newRoleId = Int32.Parse( collection["item.Role"].ToString() );
+            
+            string currUserIdentityId = collection["item.StringId"].ToString();
+            string roleName = ((BugTracker.Models.BTUserRoles)newRoleId).ToString();
+
+
+            // Update my database.
+            string query = "UPDATE BTUsers SET BTUsers.Role = @roleId WHERE BTUsers.Id = @userId;";
+            _db.Execute(query, new { roleId = newRoleId, userId = currUserId } );
+
+            // Update ASP Identity database (to correctly enable authorization).
+            // Delete any and all entries of the currUser from the DB.
+            query = "DELETE FROM AspNetUserRoles WHERE UserId = @userId;";
+            _db.Execute(query, new { userId = currUserIdentityId });
+
+            // Add in our new entry w/ currUserIdentityId and roleIdIdentity.
+            await _userManager.AddToRoleAsync( _dbIdentity.Users.Find(currUserIdentityId), roleName);
+
+            return RedirectToAction("Assignment");
+        }
+
+
+
+        // Manage Roles
+        // GET: Role/Manage
+        [HttpGet]
+        public ActionResult Manage()
         {
             // Get a list of roles.
-            RoleViewModel pizza = new RoleViewModel()
+            RoleViewModel model = new RoleViewModel()
             {
                 roleList = _dbIdentity.Roles.ToList()
             };
 
-
-            return View(pizza);
+            return View(model);
         }
+
 
         // POST: Role/Create
         [HttpPost]
@@ -45,8 +101,8 @@ namespace BugTracker.Controllers
             try
             {
                 // Modified code from: https://www.dotnetfunda.com/articles/show/2898/working-with-roles-in-aspnet-identity-for-mvc
-                // create new role obj.
-                // add obj to db.
+                // Create new role object.
+                // Add role to database.
                 _dbIdentity.Roles.Add(new Microsoft.AspNetCore.Identity.IdentityRole()
                 {
                     Name = collection["currRole"],
@@ -55,7 +111,7 @@ namespace BugTracker.Controllers
                 }); ;
                 _dbIdentity.SaveChanges();
 
-                return RedirectToAction("Index");
+                return RedirectToAction("Manage");
             }
             catch
             {
@@ -63,17 +119,20 @@ namespace BugTracker.Controllers
             }
         }
 
-        // GET: Role/Edit/5
+
+        // GET: Role/Update/5
+        [HttpGet]
         public ActionResult Update(string id)
         {
             RoleViewModel pizza = new RoleViewModel()
             {
-                currRole = _dbIdentity.Roles.Find( id )
+                currRole = _dbIdentity.Roles.Find(id)
             };
             return View(pizza);
         }
 
-        // POST: Role/Edit/5
+
+        // POST: Role/Update/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Update(string id, IFormCollection collection)
@@ -81,15 +140,17 @@ namespace BugTracker.Controllers
             try
             {
                 // Get the role.
-                // update the property.
                 Microsoft.AspNetCore.Identity.IdentityRole roleToUpdate = _dbIdentity.Roles.Find(id);
+
+                // Update the property.
                 roleToUpdate.Name = collection["currRole.Name"];
+                roleToUpdate.NormalizedName = roleToUpdate.Name.ToUpper();
 
-                // update db.
+                // Update database.
                 _dbIdentity.Roles.Update(roleToUpdate);
-
                 _dbIdentity.SaveChanges();
-                return RedirectToAction(nameof(Index));
+
+                return RedirectToAction("Manage");
             }
             catch
             {
@@ -97,14 +158,16 @@ namespace BugTracker.Controllers
             }
         }
 
+
         // GET: Role/Delete/5
+        [HttpGet]
         public ActionResult Delete(string id)
         {
             // Get role and delete it.
             _dbIdentity.Roles.Remove(_dbIdentity.Roles.Find(id));
             _dbIdentity.SaveChanges();
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Manage");
         }
     }
 }

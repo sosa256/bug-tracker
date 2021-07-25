@@ -21,7 +21,8 @@ namespace BugTracker.Areas.Identity
                         context.Configuration.GetConnectionString("BugTrackerContextConnection")));
 
                 services.AddDefaultIdentity<BugTrackerUser>(options => options.SignIn.RequireConfirmedAccount = false)// Revert to true when implemented
-                    .AddEntityFrameworkStores<BugTrackerContext>();
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<BugTrackerContext>();
             });
         }
     }

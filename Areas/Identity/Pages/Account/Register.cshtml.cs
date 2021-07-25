@@ -15,8 +15,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using BugTracker.Helpers;
-using BugTracker.Models;
-using Dapper.Contrib.Extensions;
 using Dapper;
 using Microsoft.Data.SqlClient;
 
@@ -25,12 +23,14 @@ namespace BugTracker.Areas.Identity.Pages.Account
     [AllowAnonymous]
     public class RegisterModel : PageModel
     {
+        // PROPERTIES
         private readonly SignInManager<BugTrackerUser> _signInManager;
         private readonly UserManager<BugTrackerUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
-        
 
+
+        // CONSTRUCTORS
         public RegisterModel(
             UserManager<BugTrackerUser> userManager,
             SignInManager<BugTrackerUser> signInManager,
@@ -43,6 +43,7 @@ namespace BugTracker.Areas.Identity.Pages.Account
             _emailSender = emailSender;
         }
 
+        // PROPERTIES (other stuff)
         [BindProperty]
         public InputModel Input { get; set; }
 
@@ -50,6 +51,7 @@ namespace BugTracker.Areas.Identity.Pages.Account
 
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
+        // CONSTRUCTOR 
         public class InputModel
         {
             [Required]
@@ -74,6 +76,8 @@ namespace BugTracker.Areas.Identity.Pages.Account
             public string ConfirmPassword { get; set; }
         }
 
+
+        // METHODS
         public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
@@ -93,8 +97,13 @@ namespace BugTracker.Areas.Identity.Pages.Account
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
-                    InsertNewBTUser();
                     _logger.LogInformation("User created a new account with password.");
+
+                    // Update myDB.
+                    InsertNewBTUser(user.Id);
+
+                    // Add User to default NoRole role.
+                    await _userManager.AddToRoleAsync(user, "NoRole");
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
@@ -127,18 +136,14 @@ namespace BugTracker.Areas.Identity.Pages.Account
             return Page();
         }
 
-        private void InsertNewBTUser()
+        private void InsertNewBTUser(string stringId)
         {
-            //BTUser newUser = new BTUser(Input.UserName); ;
+            // Establish connection.
             SqlConnection db = DbHelper.GetConnection();
+            string query = "INSERT INTO BTUsers(UserName, StringId) VALUES( @userName, @stringId );";
 
-            // Insert the new BTUser
-            //db.Insert<BTUser>(newUser);
-            // INSERT INTO BTUsers(UserName) VALUES( 'tt006' );
-            db.Execute(
-                String.Format("INSERT INTO BTUsers(UserName) VALUES( '{0}' );", Input.UserName)
-            );
-            
+            // Insert the new BTUser.
+            db.Execute(query, new { userName = Input.UserName, stringId = stringId });
         }
     }
 }
