@@ -113,11 +113,50 @@ Made a view for Managing Roles
 07/22/2021 8:39 PM
 Created the viewmodel and Controller for Roles
 
+07/23/2021 12:28 PM
+Git is now used for version control
+
+07/24/2021 5:30 PM
+Created a role assignment view
+
+07/24/2021 6:04 PM
+Used tag helpers to create a dropdown select
+	made BTUserRoles enum
+
+07/24/2021 7:23 PM
+Made an update role button that works
+
+07/24/2021 9:55 PM
+discovered Microsoft.AspNetCore.Identity.AspNetRoleManager too late :^(
+
+
+
+
+
+
+
+sync my role data with identity role data
+
+
+clean up code
+display credit
+
+
+
+
+populate users
+Manage roles on users
+	add roles to users
+add role based authorization
+
+
+
+
 
 
 
 TODO
-Manage roles
+
 model
 controller
 view

@@ -2,24 +2,29 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BugTracker.Controllers
 {
     //[Authorize]
     public class HomeController : Controller
     {
+        // PROPERTIES
         private readonly ILogger<HomeController> _logger;
 
+
+
+
+        // CONSTRUCTORS
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
         }
 
+
+
+
+        // ACTIONS / METHODS
         public IActionResult Index()
         {
             return View();

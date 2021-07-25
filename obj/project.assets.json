@@ -9027,11 +9027,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\BugTrackerProjects\\Fuck\\BugTracker\\BugTracker.csproj",
+      "projectUniqueName": "C:\\Users\\Erik Sosa\\Documents\\Git\\BugTracker\\BugTracker.csproj",
       "projectName": "BugTracker",
-      "projectPath": "C:\\BugTrackerProjects\\Fuck\\BugTracker\\BugTracker.csproj",
+      "projectPath": "C:\\Users\\Erik Sosa\\Documents\\Git\\BugTracker\\BugTracker.csproj",
       "packagesPath": "C:\\Users\\Erik Sosa\\.nuget\\packages\\",
-      "outputPath": "C:\\BugTrackerProjects\\Fuck\\BugTracker\\obj\\",
+      "outputPath": "C:\\Users\\Erik Sosa\\Documents\\Git\\BugTracker\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Erik Sosa\\AppData\\Roaming\\NuGet\\NuGet.Config",

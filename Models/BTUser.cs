@@ -5,7 +5,9 @@ namespace BugTracker.Models
     public class BTUser
     {
         // PROPERTIES
+        [Key]
         public int Id { get; set; }
+        public string StringId { get; set; }
 
         [Required]
         [MinLength(3, ErrorMessage = "Username must contain at least three characters")]

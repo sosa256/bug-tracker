@@ -1,0 +1,49 @@
+﻿@model BugTracker.ViewModels.RoleAssignmentViewModel
+
+
+
+<h1>Role Assignment</h1>
+<table class="table table-striped table-bordered table-hover" style="max-width: 500px;">
+    @* User list *@
+    @if (Model.userList.Count != 0)
+    {
+        <tr class="text-center">
+            <td>Full Name</td>
+            <td>User Name</td>
+            <td>Role</td>
+        </tr>
+        @foreach (var item in Model.userList)
+        {
+            <tr>
+                @* Full name *@
+                <td>
+                    @item.FirstName @item.LastName
+                </td>
+
+                @* Username *@
+                <td>
+                    @item.UserName
+                </td>
+
+                @* Role *@
+                <td>
+                    @using (var form = Html.BeginForm("RoleUpdate", "Role", FormMethod.Post))
+                    {
+                        @Html.HiddenFor(model => item.Id)
+                        @Html.HiddenFor(model => item.StringId)
+                        <select asp-items="@(Html.GetEnumSelectList<BugTracker.Models.BTUserRoles>())" asp-for="@item.Role"></select>
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    }
+                </td>
+            </tr>
+        }
+    }
+    else
+    {
+        <tr>
+            <td>
+                Looks like there are no users!
+            </td>
+        </tr>
+    }
+</table>

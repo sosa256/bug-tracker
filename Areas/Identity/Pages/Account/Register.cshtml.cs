@@ -15,8 +15,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using BugTracker.Helpers;
-using BugTracker.Models;
-using Dapper.Contrib.Extensions;
 using Dapper;
 using Microsoft.Data.SqlClient;
 
@@ -93,7 +91,7 @@ namespace BugTracker.Areas.Identity.Pages.Account
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
-                    InsertNewBTUser();
+                    InsertNewBTUser(user.Id);
                     _logger.LogInformation("User created a new account with password.");
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -127,16 +125,14 @@ namespace BugTracker.Areas.Identity.Pages.Account
             return Page();
         }
 
-        private void InsertNewBTUser()
+        private void InsertNewBTUser(string stringId)
         {
-            //BTUser newUser = new BTUser(Input.UserName); ;
+            // Establish connection.
             SqlConnection db = DbHelper.GetConnection();
 
-            // Insert the new BTUser
-            //db.Insert<BTUser>(newUser);
-            // INSERT INTO BTUsers(UserName) VALUES( 'tt006' );
+            // Insert the new BTUser.
             db.Execute(
-                String.Format("INSERT INTO BTUsers(UserName) VALUES( '{0}' );", Input.UserName)
+                String.Format("INSERT INTO BTUsers(UserName, StringId) VALUES( '{0}', {1} );", Input.UserName, stringId)
             );
             
         }
