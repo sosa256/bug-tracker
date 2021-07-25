@@ -30,7 +30,7 @@ namespace BugTracker.Controllers
             return View();
         }
 
-        //[Authorize(Roles = "ADMINISTRATOR")]
+        [Authorize(Roles = "Administrator")]
         public IActionResult Privacy()
         {
             return View();

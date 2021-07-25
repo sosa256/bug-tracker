@@ -1,13 +1,16 @@
-﻿using BugTracker.Data;
+﻿using BugTracker.Areas.Identity.Data;
+using BugTracker.Data;
 using BugTracker.Helpers;
 using BugTracker.Models;
 using BugTracker.ViewModels;
 using Dapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace BugTracker.Controllers
 {
@@ -16,13 +19,15 @@ namespace BugTracker.Controllers
         // PROPERTIES
         private SqlConnection _db;
         private readonly BugTrackerContext _dbIdentity;
+        private readonly UserManager<BugTrackerUser> _userManager;
 
 
 
 
         // CONSTRUCTORS
-        public RoleController(BugTrackerContext context)
+        public RoleController(UserManager<BugTrackerUser> userManager, BugTrackerContext context)
         {
+            _userManager = userManager;
             _db = DbHelper.GetConnection();
             _dbIdentity = context;
         }
@@ -47,37 +52,26 @@ namespace BugTracker.Controllers
         }
 
         [HttpPost]
-        public ActionResult RoleUpdate(IFormCollection collection)
+        public async Task<ActionResult> RoleUpdateAsync(IFormCollection collection)
         {
-            string currUser = collection["item.Id"].ToString();
+            string currUserId = collection["item.Id"].ToString();
             int newRoleId = Int32.Parse( collection["item.Role"].ToString() );
             
-            string currUserIdentity = collection["item.StringId"].ToString();
+            string currUserIdentityId = collection["item.StringId"].ToString();
             string roleName = ((BugTracker.Models.BTUserRoles)newRoleId).ToString();
 
 
             // Update my database.
-            string query = String.Format("UPDATE BTUsers SET BTUsers.Role = {0} WHERE BTUsers.Id = {1}", newRoleId, currUser );
-            _db.Execute(query);
+            string query = "UPDATE BTUsers SET BTUsers.Role = @roleId WHERE BTUsers.Id = @userId;";
+            _db.Execute(query, new { roleId = newRoleId, userId = currUserId } );
 
             // Update ASP Identity database (to correctly enable authorization).
             // Delete any and all entries of the currUser from the DB.
-            query = String.Format("DELETE FROM AspNetUserRoles WHERE UserId = '{0}'", currUserIdentity);
-            _db.Execute(query);
+            query = "DELETE FROM AspNetUserRoles WHERE UserId = @userId;";
+            _db.Execute(query, new { userId = currUserIdentityId });
 
-            // Get RoleId.
-            query = String.Format("SELECT Id FROM AspNetRoles WHERE Name = '{0}'", roleName);
-            string roleIdIdentity = _db.Query<String>(query).Single();
-
-            // Add in our new entry w/ currUserIdentity and roleIdIdentity.
-
-            _dbIdentity.Add<Microsoft.AspNetCore.Identity.IdentityUserRole>()
-            //_dbIdentity.UserRoles.Add(
-            //    new Microsoft.AspNetCore.Identity.IdentityUserRole("") { RoleId = roleIdIdentity, UserId = currUserIdentity}
-            //);
-
-            // Save changes.
-            _dbIdentity.SaveChanges();
+            // Add in our new entry w/ currUserIdentityId and roleIdIdentity.
+            await _userManager.AddToRoleAsync( _dbIdentity.Users.Find(currUserIdentityId), roleName);
 
             return RedirectToAction("Assignment");
         }

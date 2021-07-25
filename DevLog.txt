@@ -129,48 +129,39 @@ Made an update role button that works
 07/24/2021 9:55 PM
 discovered Microsoft.AspNetCore.Identity.AspNetRoleManager too late :^(
 
+07/25/2021 2:16 PM
+In IdentityHostingStartup.cs
+	added .AddRoles<IdentityRole>() so that I could use the role stuff in userManager
+In Resgister.cshtml
+	Discovered and fixed a security issue (sql injection)
+	used the userManager to add new user to 'NoRole' role by default.
+	Tested Role Based Authorization; it works :^) 
 
-
-
-
-
-
-sync my role data with identity role data
-
-
-clean up code
-display credit
-
-
-
-
-populate users
-Manage roles on users
-	add roles to users
-add role based authorization
-
-
-
+07/25/2021 2:47 PM
+In RoleController.cs
+	Changed queries to parameterized queries for security
+	Made myDB and the IdentityDB in sync
+	Role Based Authorization is ready to be used
 
 
 
 
 TODO
+use spur to make things look nice
 
-model
-controller
-view
+in RoleController use the view models correctly by haveing the action have the model as a parameter
+
+make create role action inaccessible
+make role assignment only for Administrator role
 
 Add validations to login
 
-Add Role Based Authorization
-Make an Admin Only page
+populate BTUsers (10 users)
+Manage roles on users
+	add roles to users
 
-create my models
-	Assignment
-	Ticket
-	ClosedTicket
-	Comments
+create project controller and view
+create bug ticket m,v, and c
+	and all the other models to supplement it
 
-Create the views 
-
+use https://www.datatables.net/ for nice DB tables
