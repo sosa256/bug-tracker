@@ -143,19 +143,13 @@ In RoleController.cs
 	Made myDB and the IdentityDB in sync
 	Role Based Authorization is ready to be used
 
+07/25/2021 5:12 PM
+Used spur to make things look nice.
+
 
 
 
 TODO
-use spur to make things look nice
-
-in RoleController use the view models correctly by haveing the action have the model as a parameter
-
-make create role action inaccessible
-make role assignment only for Administrator role
-
-Add validations to login
-
 populate BTUsers (10 users)
 Manage roles on users
 	add roles to users
@@ -165,3 +159,10 @@ create bug ticket m,v, and c
 	and all the other models to supplement it
 
 use https://www.datatables.net/ for nice DB tables
+
+in RoleController use the view models correctly by haveing the action have the model as a parameter
+
+make create role action inaccessible
+make role assignment only for Administrator role
+
+Add validations to login and show errors on a failed login (pw or un was bad)

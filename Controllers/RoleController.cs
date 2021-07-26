@@ -51,6 +51,7 @@ namespace BugTracker.Controllers
             return View(pizza);
         }
 
+        // TODO: Learn how to make confirmation notification.
         [HttpPost]
         public async Task<ActionResult> RoleUpdateAsync(IFormCollection collection)
         {
@@ -160,6 +161,7 @@ namespace BugTracker.Controllers
 
 
         // GET: Role/Delete/5
+        // TODO: Learn how to make nice alerts.
         [HttpGet]
         public ActionResult Delete(string id)
         {
