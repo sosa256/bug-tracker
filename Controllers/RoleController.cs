@@ -66,6 +66,13 @@ namespace BugTracker.Controllers
             string query = "UPDATE BTUsers SET BTUsers.Role = @roleId WHERE BTUsers.Id = @userId;";
             _db.Execute(query, new { roleId = newRoleId, userId = currUserId } );
 
+            if (currUserIdentityId == "")
+            {
+                // The user is a dummy account
+                // no need to update ASP Identity tables 
+                return RedirectToAction("Assignment");
+            }
+
             // Update ASP Identity database (to correctly enable authorization).
             // Delete any and all entries of the currUser from the DB.
             query = "DELETE FROM AspNetUserRoles WHERE UserId = @userId;";

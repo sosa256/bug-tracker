@@ -1,0 +1,45 @@
+﻿@{
+    ViewData["Title"] = "Project Details";
+}
+@model BugTracker.ViewModels.ProjectDetailsViewModel
+
+<h1>@Model.project.Title</h1>
+<h2 class="pt-2">Users Assigned</h2>
+<table class="table table-striped table-bordered table-hover" style="max-width: 500px;">
+    @* Project list *@
+    @if (Model.usersAssigned.Count != 0)
+    {
+        <tr class="text-center">
+            <td>Username</td>
+            <td>Full Name</td>
+        </tr>
+
+        @foreach (var item in Model.usersAssigned)
+        {
+            <tr>
+                @* Username, Fullname, btns *@
+                <td>
+                    @item.UserName
+                </td>
+
+                <td>
+                    @item.FirstName @item.LastName
+                </td>
+
+                @*<td class="text-center">
+                    <a href="/Project/Update/@item.Id" class="btn btn-sm btn-primary">Rename</a>
+
+                    <a href="/Project/Delete/@item.Id" onclick="return confirm('Are you sure?');" class="btn btn-sm btn-danger">Delete</a>
+                </td>*@
+            </tr>
+        }
+    }
+    else
+    {
+        <tr>
+            <td>
+                Looks like there are no users assigned to this Project!<br>
+            </td>
+        </tr>
+    }
+</table>
