@@ -155,24 +155,28 @@ CRUD operation for project implemented.
 07/26/2021 7:04 PM
 Can now view users assigned to a certain project by clicking on a project's name
 
+07/27/2021 1:41 PM
+Project assignment functionality is complete
 
+07/27/2021 5:50 PM
+Can now view Bug Tickets
 
 
 TODO
-create project controller
-	Remove user assignment button in detail
-	Assign more users btn
-		list of users not assigned to the project with assign button
-	details (show bugtickets)
-
-create bug ticket m,v, and c
-	and all the other models to supplement it
+(page:details) display all properties of curr bugTicket
+	(action) allow properties to be edited
+	(action) show ticket history by date most curr first
+(page) list all closedBugTickets
+	(action) allow tickets to be reopened
 
 use https://www.datatables.net/ for nice DB tables
 
 in RoleController use the view models correctly by haveing the action have the model as a parameter
+	scratch that use the anchor tag helper to show properties
 
+use the Authorization to restric actions
 make create role action inaccessible
 make role assignment only for Administrator role
 
 Add validations to login and show errors on a failed login (pw or un was bad)
+Add validations to create project

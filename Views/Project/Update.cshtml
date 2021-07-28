@@ -3,7 +3,7 @@
 }
 @model BugTracker.ViewModels.ProjectViewModel
 
-<h1>Rename Role</h1>
+<h1>Rename Project</h1>
 @using (var form = Html.BeginForm("Update", "Project", FormMethod.Post))
 {
     <div class="input-group">
@@ -16,3 +16,6 @@
         </div>
     </div>
 }
+
+@* Cancel button *@
+<a asp-controller="Project" asp-action="Manage" class="btn btn-sm btn-danger">Cancel</a>

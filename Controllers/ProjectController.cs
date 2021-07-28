@@ -6,9 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace BugTracker.Controllers
 {
@@ -30,7 +28,6 @@ namespace BugTracker.Controllers
 
 
         // ACTIONS / METHODS
-
         // GET: Project/Details/5
         // Find a way to strip away the stringId and any other properties not needed.
         public ActionResult Details(int id)
@@ -46,55 +43,60 @@ namespace BugTracker.Controllers
                  *     WHERE Assignments.ProjectId = {0}
                  * ); 
                  */
-                usersAssigned = _db.Query<BTUser>(String.Format("SELECT * FROM BTUsers WHERE BTUsers.Id IN(	SELECT Assignments.UserAssigned	FROM Assignments WHERE Assignments.ProjectId = {0});", id) ).ToList()
+                usersAssigned = _db.Query<BTUser>(String.Format("SELECT * FROM BTUsers WHERE BTUsers.Id IN(	SELECT Assignments.UserAssigned	FROM Assignments WHERE Assignments.ProjectId = {0});", id)).ToList()
             };
             return View(model);
         }
 
-        // GET: ProjectController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
 
-        // POST: ProjectController/Edit/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        // POST: Project/Unassign/
+        public ActionResult Unassign(IFormCollection collection)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            int userId = Int32.Parse(collection["item.Id"].ToString());
+            int projId = Int32.Parse(collection["project.Id"].ToString());
+            string query = "DELETE FROM Assignments WHERE Assignments.UserAssigned = @userAssigned AND Assignments.ProjectId = @projectId;";
+
+            // Remove the assignment.
+            _db.Execute(query, new { userAssigned = userId, projectId = projId });
+
+            return RedirectToAction("Details", new { id = projId });
         }
 
 
+        [HttpGet]
+        // GET: Project/Assign/5
+        public ActionResult Assign(int projId)
+        {
+            // List of avalible users
+            ProjectsAssignViewModel model = new ProjectsAssignViewModel()
+            {
+                project = _db.Query<Project>(String.Format("SELECT * FROM Projects WHERE Projects.Id = {0};", projId)).First(),
+                freeUsers = _db.Query<BTUser>("SELECT * FROM BTUsers WHERE BTUsers.Id NOT IN (	SELECT Assignments.UserAssigned	FROM Assignments);").ToList()
+            };
+            return View(model);
+        }
 
-        // POST: ProjectController/Delete/5
+
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        // POST: Project/Assign/5
+        public ActionResult Assign(IFormCollection collection)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            int userId = Int32.Parse(collection["item.Id"].ToString());
+            int projId = Int32.Parse(collection["project.Id"].ToString());
+            string query = "INSERT INTO Assignments VALUES(@userAssigned, @projectId);";
+
+            // Assign user to project.
+            _db.Execute(query, new {userAssigned = userId, projectId = projId} );
+
+            return RedirectToAction("Assign", new { projId = projId } );
         }
 
 
 
-
-
-        // CRUD operations
-        // GET: Project
+        // CRUD operations for project
+        // GET: Project/Manage
+        [HttpGet]
         public ActionResult Manage()
         {
             // Get list of projects.
@@ -106,27 +108,22 @@ namespace BugTracker.Controllers
             return View(model);
         }
 
+
         // POST: Project/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(IFormCollection collection)
         {
-            try
-            {
-                // Insert new project to myDB.
-                string query = "INSERT INTO Projects(Title) VALUES( @title );";
-                _db.Execute(query, new { title = collection["currProject.Title"].ToString() });
+            // Insert new project to myDB.
+            string query = "INSERT INTO Projects(Title) VALUES( @title );";
+            _db.Execute(query, new { title = collection["currProject.Title"].ToString() });
 
-                return RedirectToAction("Manage");
-            }
-            catch
-            {
-                return View();
-            }
+            return RedirectToAction("Manage");
         }
 
 
-        // GET: Project/Details/5
+        // GET: Project/Update/5
+        [HttpGet]
         public ActionResult Update(int id)
         {
             ProjectViewModel model = new ProjectViewModel()
@@ -139,41 +136,29 @@ namespace BugTracker.Controllers
             return View(model);
         }
 
-        // POST: ProjectController/Edit/5
+
+        // POST: Project/Update/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Update(int id, IFormCollection collection)
         {
-            try
-            {
-                // Update the project with the new name.
-                string query = "UPDATE Projects SET Title = @newTitle WHERE Projects.Id = @projId;";
-                _db.Execute(query, new { newTitle = collection["currProject.Title"].ToString(), projId = id });
+            // Update the project with the new name.
+            string query = "UPDATE Projects SET Title = @newTitle WHERE Projects.Id = @projId;";
+            _db.Execute(query, new { newTitle = collection["currProject.Title"].ToString(), projId = id });
 
-                return RedirectToAction("Manage");
-            }
-            catch
-            {
-                return View();
-            }
+            return RedirectToAction("Manage");
         }
 
 
-        // GET: ProjectController/Delete/5
+        [HttpGet]
+        // GET: Project/Delete/5
         public ActionResult Delete(int id)
         {
-            try
-            {
-                // Delete project from myDB.
-                string query = "DELETE FROM Projects WHERE Projects.Id = @projId ;";
-                _db.Execute(query, new { projId = id });
+            // Delete project from myDB.
+            string query = "DELETE FROM Projects WHERE Projects.Id = @projId ;";
+            _db.Execute(query, new { projId = id });
 
-                return RedirectToAction("Manage");
-            }
-            catch
-            {
-                return View();
-            }
+            return RedirectToAction("Manage");
         }
     }
 }
