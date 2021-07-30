@@ -1,0 +1,71 @@
+﻿@{
+    ViewData["Title"] = "Bug Tickets Details";
+}
+@model BugTracker.ViewModels.BugTicketDetailsViewModel
+
+
+
+
+<h1 class="dash-title">@Model.currTicketReadable.Title</h1>
+<h2>@Model.parentProject.Title</h2>
+
+@* History button *@
+<div class=" pb-3">
+    <a href="#" class="btn btn-sm btn-outline-primary">History</a>
+</div>
+
+<div class="card spur-card ">
+    <div class="card-header bg-danger text-white">
+        <div class="spur-card-icon">
+            <i class="fas fa-chart-bar"></i>
+        </div>
+        <div class="spur-card-title"> Unwanted Behavior </div>
+        @*<div class="spur-card-menu">
+                <div class="dropdown show">
+                    <a class="spur-card-menu-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                        <a class="dropdown-item" href="#">Action</a>
+                        <a class="dropdown-item" href="#">Another action</a>
+                        <a class="dropdown-item" href="#">Something else here</a>
+                    </div>
+                </div>
+            </div>*@
+    </div>
+    <div class="card-body ">@Model.currTicketReadable.UnwantedBehavior</div>
+</div>
+
+
+<div class="card spur-card">
+    <div class="card-header bg-primary text-white">
+        <div class="spur-card-icon">
+            <i class="fas fa-chart-bar"></i>
+        </div>
+        <div class="spur-card-title"> Repeatable Steps </div>
+        @*<div class="spur-card-menu">
+                <div class="dropdown show">
+                    <a class="spur-card-menu-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                        <a class="dropdown-item" href="#">Action</a>
+                        <a class="dropdown-item" href="#">Another action</a>
+                        <a class="dropdown-item" href="#">Something else here</a>
+                    </div>
+                </div>
+            </div>*@
+    </div>
+    <div class="card-body ">@Model.currTicketReadable.RepeatableSteps</div>
+</div>
+
+
+<h3>Other details</h3>
+<ul>
+    <li>Opened by: @Model.currTicketReadable.OpenedByReadable</li>
+    <li>Severity: @Model.currTicketReadable.SeverityReadable</li>
+    <li>Status: @Model.currTicketReadable.StatusReadable</li>
+</ul>
+
+
+@* Comments here *@
+
+

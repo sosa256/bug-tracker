@@ -9,8 +9,7 @@ namespace BugTracker.ViewModels
     public class ProjectViewModel
     {
         // PROPERTIES
-        public List<Project> projList; 
-        public List<String> projOwnerList; 
+        public List<ProjectReadable> projReadableList;
         public Project currProject;
     }
 }

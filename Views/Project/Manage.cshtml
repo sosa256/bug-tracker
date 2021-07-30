@@ -28,7 +28,7 @@
     </tr>
 
     @* Project list *@
-    @if (Model.projList.Count != 0)
+    @if (Model.projReadableList.Count != 0)
     {
         <tr>
             <td>Title</td>
@@ -36,7 +36,7 @@
             <td></td>
         </tr>
 
-        @foreach (var item in Model.projList)
+        @foreach (var item in Model.projReadableList)
         {
             <tr>
                 @* Title, Owner, btns *@
@@ -46,7 +46,7 @@
 
                 <td>
                     @* Make the view model somehow include the full name of the owner *@
-                    @item.Owner
+                    @item.OwnerReadable
                 </td>
 
                 <td class="text-center">

@@ -161,8 +161,25 @@ Project assignment functionality is complete
 07/27/2021 5:50 PM
 Can now view Bug Tickets
 
+07/29/2021 4:12 PM
+Made a TicketReadable model to convert enums and ids to their proper names.
+Used some of that for projects model.
+Humans can now read the data clearly.
+
+
+07/29/2021 9:18 PM
+Ticket Create & Read working properly
+
+
+
 
 TODO
+History
+update bug ticket
+
+Close  bug ticket
+delete bug ticket
+
 (page:details) display all properties of curr bugTicket
 	(action) allow properties to be edited
 	(action) show ticket history by date most curr first

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace BugTracker.Controllers
@@ -102,7 +103,7 @@ namespace BugTracker.Controllers
             // Get list of projects.
             ProjectViewModel model = new ProjectViewModel()
             {
-                projList = _db.Query<Project>("SELECT * FROM Projects").ToList()
+                projReadableList = ProjListToProjReadableList( _db.Query<Project>("SELECT * FROM Projects").ToList() )
             };
 
             return View(model);
@@ -159,6 +160,40 @@ namespace BugTracker.Controllers
             _db.Execute(query, new { projId = id });
 
             return RedirectToAction("Manage");
+        }
+
+        public List<ProjectReadable> ProjListToProjReadableList(List<Project> projList)
+        {
+            List<ProjectReadable> ret = new List<ProjectReadable>();
+            if (projList.Count == 0)
+            {
+                // There are no projects.
+                return ret;
+            }
+
+            /* SELECT CONCAT(BTUsers.FirstName,  ' ' + BTUsers.LastName) AS FullName
+             * FROM BTUsers
+             * WHERE BTUsers.Id IN(
+             *     SELECT Projects.Owner
+             *     FROM Projects
+             *     WHERE Projects.Id = @projId
+             * );
+             */
+            string getProjNameQuery = "SELECT CONCAT(BTUsers.FirstName,  ' ' + BTUsers.LastName) AS FullName FROM BTUsers WHERE BTUsers.Id IN ( SELECT Projects.Owner FROM Projects WHERE Projects.Id = @projId );";
+
+            // Begin processing the list.
+            foreach (Project item in projList)
+            {
+                ProjectReadable readable = new ProjectReadable(
+                    item,
+                    // Create the OpenedBy string.
+                    _db.Query<string>(getProjNameQuery, new { projId = item.Id }).First()
+                );
+
+                ret.Add(readable);
+            }
+
+            return ret;
         }
     }
 }

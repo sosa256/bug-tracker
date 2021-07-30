@@ -1,0 +1,65 @@
+﻿@{
+    ViewData["Title"] = "Create Bug Ticket";
+}
+@model BugTracker.ViewModels.BugTicketCreateViewModel
+
+
+
+<h1 class="dash-title">Create Bug Ticket</h1>
+@* Create roles field *@
+
+@*@using (var form = Html.BeginForm("Create", "BugTicket", FormMethod.Post))
+{*@
+<form asp-controller="BugTicket" asp-action="Create" method="post">
+    <div class="input-group">
+        @*int ProjectParent*@
+        <label asp-for="@Model.newTicket.ProjectParent"></label>
+        <select asp-items="@(new SelectList(Model.projOptionList, "Id", "Title"))" asp-for="@Model.newTicket.ProjectParent" ></select>
+    </div>
+
+    <div class="input-group">
+        @*Title *@
+        <label asp-for="@Model.newTicket.Title" ></label>
+        <input asp-for="@Model.newTicket.Title" />
+    </div>
+
+    <div class="input-group">
+        @*int Severity *@
+        <label asp-for="@Model.newTicket.Severity" ></label>
+        <select asp-items="@(Html.GetEnumSelectList<BugTracker.Models.TicketSeverity>())" asp-for="@Model.newTicket.Severity" ></select>
+    </div>
+
+    @*<div class="input-group">
+        int Status 
+        <label asp-for="@Model.newTicket.Status" ></label>
+        <select asp-items="@(Html.GetEnumSelectList<BugTracker.Models.TicketStatus>())" asp-for="@Model.newTicket.Status" ></select>
+    </div>*@
+
+    <div>
+        @*string UnwantedBehavior *@
+        <label asp-for="@Model.newTicket.UnwantedBehavior" ></label>
+        <textarea asp-for="@Model.newTicket.UnwantedBehavior" ></textarea>
+    </div>
+
+    <div>
+        @*string RepeatableSteps *@
+        <label asp-for="@Model.newTicket.RepeatableSteps" ></label>
+        <textarea asp-for="@Model.newTicket.RepeatableSteps" ></textarea>
+    </div>
+
+    @* Create button *@
+    <button type="submit" class="btn btn-success">Create</button>
+    @Html.ValidationSummary()
+</form>
+@*}*@
+
+
+
+
+@*int Id *@
+@*int HistoryId *@
+@*bool IsCurr *@
+
+@*int OpenedBy*@
+
+

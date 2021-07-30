@@ -10,6 +10,7 @@ namespace BugTracker.Models
     {
         // PROPERTIES
         [Key]
+        [Display(Name = "Project Parent")]
         public int ProjectParent { get; set; }
         [Key]
         public int Id { get; set; }
@@ -22,9 +23,11 @@ namespace BugTracker.Models
         public int Status { get; set; }
         [MinLength(3)]
         [MaxLength(1023)]
+        [Display(Name = "Unwanted Behavior")]
         public string UnwantedBehavior { get; set; }
         [MinLength(3)]
         [MaxLength(1023)]
+        [Display(Name = "Repeatable Steps")]
         public string RepeatableSteps { get; set; }
         public int OpenedBy { get; set; }
     }
