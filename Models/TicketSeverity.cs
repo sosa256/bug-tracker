@@ -5,7 +5,6 @@
         Urgent = 0,
         High,
         Medium,
-        Low,
-        None,
+        Low
     }
 }

@@ -9,7 +9,6 @@ namespace BugTracker.Models
         InProgress,
         [Display(Name = "Temporary Solution")]
         TempSolution,
-        Complete,
-        None
+        Complete
     }
 }

@@ -33,7 +33,7 @@
                         @Html.HiddenFor(model => item.Id)
                         @Html.HiddenFor(model => item.StringId)
                         <select asp-items="@(Html.GetEnumSelectList<BugTracker.Models.BTUserRoles>())" asp-for="@item.Role"></select>
-                        <button type="submit" class="btn btn-primary">Update</button>
+                        <button type="submit" class="btn btn-outline-primary">Update</button>
                     }
                 </td>
             </tr>

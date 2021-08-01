@@ -1,0 +1,63 @@
+﻿@{
+    ViewData["Title"] = "Bug Ticket History";
+}
+@model BugTracker.ViewModels.BugTicketHistoryViewModel
+
+
+
+
+<h1 class="dash-title">
+    Bug Ticket History<br />
+    <a asp-controller="BugTicket" asp-action="Details" asp-route-ticketId="@Model.mostCurrTicketId" class="btn btn-sm btn-outline-danger">Back</a>
+</h1>
+@foreach (TicketReadable item in Model.ticketHistory)
+ {
+    <div class="card spur-card " style="max-width: 500px;">
+        @* History Header *@
+        <div class="card-header bg-dark text-white">
+            <div class="spur-card-icon">
+                <i class="fas fa-chart-bar"></i>
+            </div>
+
+            <div class="spur-card-title"> 
+                <div>Id: @item.Id</div>
+                <div>Created: @item.DateCreated </div>
+            </div>
+        </div>
+
+        @* History Body *@
+        <div class="card-body ">
+
+            <div class="card spur-card ">
+                <div class="card-header bg-danger text-white">
+                    <div class="spur-card-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <div class="spur-card-title"> Unwanted Behavior </div>
+                </div>
+                <div class="card-body ">@item.UnwantedBehavior</div>
+            </div>
+
+
+            <div class="card spur-card">
+                <div class="card-header bg-primary text-white">
+                    <div class="spur-card-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <div class="spur-card-title"> Repeatable Steps </div>
+                </div>
+                <div class="card-body ">@item.RepeatableSteps</div>
+            </div>
+
+
+            <h3>Other details</h3>
+            <ul>
+                <li>Opened by: @item.OpenedByReadable</li>
+                <li>Severity: @item.SeverityReadable</li>
+                <li>Status: @item.StatusReadable</li>
+            </ul>
+
+            @* Comments here *@
+        </div> @* <div class="card-body "> *@
+    </div> @* <div class="card spur-card " style="max-width: 500px;"> *@
+ }

@@ -170,6 +170,14 @@ Humans can now read the data clearly.
 07/29/2021 9:18 PM
 Ticket Create & Read working properly
 
+07/31/2021 8:26 PM
+Ticket Update/Edit and History functionality working.
+Create Ticket for design looks nicer.
+
+07/31/2021 9:03 PM
+History back button works correctly.
+BugTicket/Details/(?id) process user input before using it.
+
 
 
 
@@ -191,9 +199,15 @@ use https://www.datatables.net/ for nice DB tables
 in RoleController use the view models correctly by haveing the action have the model as a parameter
 	scratch that use the anchor tag helper to show properties
 
+make a helper with a list of query actions
+
 use the Authorization to restric actions
 make create role action inaccessible
 make role assignment only for Administrator role
 
 Add validations to login and show errors on a failed login (pw or un was bad)
 Add validations to create project
+
+create a cronjob or something to make Ticket Status change from New to InProgress after 24hrs
+
+make sure to process ALL user input before using it

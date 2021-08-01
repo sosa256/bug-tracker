@@ -9,63 +9,64 @@
 <h1 class="dash-title">@Model.currTicketReadable.Title</h1>
 <h2>@Model.parentProject.Title</h2>
 
-@* History button *@
+@* Buttons *@
 <div class=" pb-3">
-    <a href="#" class="btn btn-sm btn-outline-primary">History</a>
+    <a asp-controller="BugTicket" asp-action="Edit" asp-route-ticketId="@Model.currTicketReadable.Id" class="btn btn-sm btn-outline-success">Edit</a>
+    <a asp-controller="BugTicket" asp-action="History" asp-route-historyId="@Model.currTicketReadable.HistoryId" class="btn btn-sm btn-outline-primary">History</a>
 </div>
 
-<div class="card spur-card ">
-    <div class="card-header bg-danger text-white">
+
+<div class="card spur-card " style="max-width: 500px;">
+    @* Ticket header *@
+    <div class="card-header bg-dark text-white">
         <div class="spur-card-icon">
             <i class="fas fa-chart-bar"></i>
         </div>
-        <div class="spur-card-title"> Unwanted Behavior </div>
-        @*<div class="spur-card-menu">
-                <div class="dropdown show">
-                    <a class="spur-card-menu-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <a class="dropdown-item" href="#">Something else here</a>
-                    </div>
-                </div>
-            </div>*@
-    </div>
-    <div class="card-body ">@Model.currTicketReadable.UnwantedBehavior</div>
-</div>
 
-
-<div class="card spur-card">
-    <div class="card-header bg-primary text-white">
-        <div class="spur-card-icon">
-            <i class="fas fa-chart-bar"></i>
+        <div class="spur-card-title">
+            Id: @Model.currTicketReadable.Id<br />
+            Created: @Model.currTicketReadable.DateCreated
         </div>
-        <div class="spur-card-title"> Repeatable Steps </div>
-        @*<div class="spur-card-menu">
-                <div class="dropdown show">
-                    <a class="spur-card-menu-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <a class="dropdown-item" href="#">Something else here</a>
-                    </div>
-                </div>
-            </div>*@
     </div>
-    <div class="card-body ">@Model.currTicketReadable.RepeatableSteps</div>
-</div>
 
+    @* Ticket body *@
+    <div class="card-body ">
+        @* Unwanted Behavior  *@
+        <div class="card spur-card ">
+            <div class="card-header bg-danger text-white">
+                <div class="spur-card-icon">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <div class="spur-card-title"> Unwanted Behavior </div>
+            </div>
+            <div class="card-body ">@Model.currTicketReadable.UnwantedBehavior</div>
+        </div>
 
-<h3>Other details</h3>
-<ul>
-    <li>Opened by: @Model.currTicketReadable.OpenedByReadable</li>
-    <li>Severity: @Model.currTicketReadable.SeverityReadable</li>
-    <li>Status: @Model.currTicketReadable.StatusReadable</li>
-</ul>
+        @* Repeatable Steps *@
+        <div class="card spur-card">
+            <div class="card-header bg-primary text-white">
+                <div class="spur-card-icon">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <div class="spur-card-title"> Repeatable Steps </div>
+            </div>
+            <div class="card-body ">@Model.currTicketReadable.RepeatableSteps</div>
+        </div>
 
+        <h3>Other details</h3>
+        <ul>
+            <li>Opened by: @Model.currTicketReadable.OpenedByReadable</li>
+            <li>Severity: @Model.currTicketReadable.SeverityReadable</li>
+            <li>Status: @Model.currTicketReadable.StatusReadable</li>
+        </ul>
+
+        @* Buttons *@
+        <div class="text-right">
+            <a asp-controller="BugTicket" asp-action="Close" asp-route-ticketId="@Model.currTicketReadable.Id" class="btn btn-sm btn-outline-warning">Close</a>
+            <a asp-controller="BugTicket" asp-action="Manage" class="btn btn-sm btn-outline-danger">Back</a>
+        </div>
+
+    </div> @* Ticket Body *@
+</div> @* Ticket Header *@
 
 @* Comments here *@
-
-

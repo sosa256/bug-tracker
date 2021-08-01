@@ -25,6 +25,7 @@
             this.UnwantedBehavior = ticket.UnwantedBehavior;
             this.RepeatableSteps = ticket.RepeatableSteps;
             this.OpenedBy = ticket.OpenedBy;
+            this.DateCreated = ticket.DateCreated;
 
             this.ProjectParentReadable = projTitle;
             this.SeverityReadable = ((TicketSeverity)this.Severity).ToString();

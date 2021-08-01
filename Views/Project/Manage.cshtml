@@ -7,7 +7,7 @@
 
 
 <h1>Manage Projects</h1>
-<table class="table table-striped table-bordered table-hover" style="max-width: 500px;">
+<table class="table table-striped table-bordered table-hover" style="max-width: 600px;">
     @* Create project field *@
     <tr>
         <td colspan="3">
@@ -50,9 +50,9 @@
                 </td>
 
                 <td class="text-center">
-                    <a href="/Project/Update/@item.Id" class="btn btn-sm btn-primary">Rename</a>
+                    <a href="/Project/Update/@item.Id" class="btn btn-sm btn-outline-primary">Rename</a>
 
-                    <a href="/Project/Delete/@item.Id" onclick="return confirm('Are you sure?');" class="btn btn-sm btn-danger">Delete</a>
+                    <a href="/Project/Delete/@item.Id" onclick="return confirm('Are you sure?');" class="btn btn-sm btn-outline-danger">Delete</a>
                 </td>
             </tr>
         }

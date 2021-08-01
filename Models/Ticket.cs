@@ -30,5 +30,7 @@ namespace BugTracker.Models
         [Display(Name = "Repeatable Steps")]
         public string RepeatableSteps { get; set; }
         public int OpenedBy { get; set; }
+        [DataType(DataType.DateTime)]
+        public DateTime DateCreated { get; set; }
     }
 }
