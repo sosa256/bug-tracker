@@ -1,48 +1,169 @@
-﻿<!DOCTYPE html>
+﻿@* Modified markup from Spur - Blank.html *@
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - BugTracker</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
-</head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">BugTracker</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2021 - BugTracker - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:400,600|Open+Sans:400,600,700" rel="stylesheet">
+
+    @* Bootstrap v4 *@
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    @* Custom css *@
+    <link rel="stylesheet" href="~/css/site.css" />
+    @* Spur *@
+    <link href="~/lib/spur/dist/css/spur.min.css" rel="stylesheet" />
+    <title>@ViewData["Title"] - BugTracker</title>
+</head>
+
+<body>
+    <div class="dash">
+        <div class="dash-nav dash-nav-dark">
+            <header>
+                <a href="#!" class="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </a>
+                @* Logo top left *@
+                <a asp-controller="Home" asp-action="Index" class="spur-logo">
+                    <i class="fas fa-bug"></i>
+                    @* adding another character makes dash-nav-list out of place *@
+                    Bug Tracker
+                </a>
+            </header>
+
+            @* The navigation list *@
+            <nav class="dash-nav-list">
+                <a asp-controller="Home" asp-action="Index" class="dash-nav-item">
+                    <i class="fas fa-home"></i>
+                    Home
+                </a>
+                <div class="dash-nav-dropdown">
+                    <a href="#!" class="dash-nav-item dash-nav-dropdown-toggle">
+                        <i class="fas fa-users-cog"></i>
+                        Roles
+                    </a>
+                    <div class="dash-nav-dropdown-menu">
+                        <a asp-controller="Role" asp-action="Manage" class="dash-nav-dropdown-item">Manage</a>
+                        <a asp-controller="Role" asp-action="Assignment" class="dash-nav-dropdown-item">Assignment</a>
+                    </div>
+                </div>
+                <div class="dash-nav-dropdown">
+                    <a href="#!" class="dash-nav-item dash-nav-dropdown-toggle">
+                        <i class="far fa-clone"></i>
+                        Projects
+                    </a>
+                    <div class="dash-nav-dropdown-menu">
+                        <a asp-controller="Project" asp-action="Manage" class="dash-nav-dropdown-item">Manage</a>
+                        @*<a asp-controller="Project" asp-action="Assignment" class="dash-nav-dropdown-item">Assignment</a>*@
+                    </div>
+                </div>
+                <div class="dash-nav-dropdown">
+                    <a href="#!" class="dash-nav-item dash-nav-dropdown-toggle">
+                        <i class="far fa-clipboard-list"></i>
+                        Bug Tickets
+                    </a>
+                    <div class="dash-nav-dropdown-menu">
+                        <a asp-controller="BugTicket" asp-action="Manage" class="dash-nav-dropdown-item">Manage</a>
+                        <a asp-controller="ClosedTicket" asp-action="Index" class="dash-nav-dropdown-item">Closed Tickets</a>
+                    </div>
+                </div>
+                @*May use this part of the template later
+                <div class="dash-nav-dropdown ">
+                    <a href="#!" class="dash-nav-item dash-nav-dropdown-toggle">
+                        <i class="fas fa-cube"></i> Components
+                    </a>
+                    <div class="dash-nav-dropdown-menu">
+                        <a href="cards.html" class="dash-nav-dropdown-item">Cards</a>
+                        <a href="forms.html" class="dash-nav-dropdown-item">Forms</a>
+                        <div class="dash-nav-dropdown ">
+                            <a href="#" class="dash-nav-dropdown-item dash-nav-dropdown-toggle">Icons</a>
+                            <div class="dash-nav-dropdown-menu">
+                                <a href="icons.html" class="dash-nav-dropdown-item">Solid Icons</a>
+                                <a href="icons.html#regular-icons" class="dash-nav-dropdown-item">Regular Icons</a>
+                                <a href="icons.html#brand-icons" class="dash-nav-dropdown-item">Brand Icons</a>
+                            </div>
+                        </div>
+                        <a href="stats.html" class="dash-nav-dropdown-item">Stats</a>
+                        <a href="tables.html" class="dash-nav-dropdown-item">Tables</a>
+                        <a href="typography.html" class="dash-nav-dropdown-item">Typography</a>
+                        <a href="userinterface.html" class="dash-nav-dropdown-item">User Interface</a>
+                    </div>
+                </div>
+                <div class="dash-nav-dropdown show">
+                    <a href="#!" class="dash-nav-item dash-nav-dropdown-toggle">
+                        <i class="fas fa-file"></i> Layouts
+                    </a>
+                    <div class="dash-nav-dropdown-menu">
+                        <a href="blank.html" class="dash-nav-dropdown-item">Blank</a>
+                        <a href="content.html" class="dash-nav-dropdown-item">Content</a>
+                        <a href="login.html" class="dash-nav-dropdown-item">Log in</a>
+                        <a href="signup.html" class="dash-nav-dropdown-item">Sign up</a>
+                    </div>
+                </div>*@
+                <div class="dash-nav-dropdown">
+                    <a href="#!" class="dash-nav-item dash-nav-dropdown-toggle">
+                        <i class="fas fa-info"></i> About
+                    </a>
+                    <div class="dash-nav-dropdown-menu">
+                        <a asp-controller="Home" asp-action="Privacy" class="dash-nav-dropdown-item">Privacy</a>
+                        <a href="https://hackerthemes.com/bootstrap-templates/spur/" target="_blank" class="dash-nav-dropdown-item">Spur Template</a>
+                    </div>
+                </div>
+            </nav>
         </div>
-    </footer>
+        <div class="dash-app">
+            <header class="dash-toolbar">
+                <a href="#!" class="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </a>
+                @*Search box functionality not implemented
+                <a href="#!" class="searchbox-toggle">
+                    <i class="fas fa-search"></i>
+                </a>
+                <form class="searchbox" action="#!">
+                    <a href="#!" class="searchbox-toggle"> <i class="fas fa-arrow-left"></i> </a>
+                    <button type="submit" class="searchbox-submit"> <i class="fas fa-search"></i> </button>
+                    <input type="text" class="searchbox-input" placeholder="type to search">
+                </form>*@
+                <div class="tools">
+                    @* spur github
+                    <a href="https://github.com/HackerThemes/spur-template" target="_blank" class="tools-item">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    Notifications
+                    <a href="#!" class="tools-item">
+                        <i class="fas fa-bell"></i>
+                        <i class="tools-item-count">+9</i>
+                    </a>*@
+                    <div class="dropdown tools-item">
+                        @* Account dropdown menue*@
+                        <a href="#" class="" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-user"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
+                            @*<a class="dropdown-item" href="#!">Profile</a>
+                            <a class="dropdown-item" href="login.html">LogoutPIzza</a>*@
+                            <form id="logoutForm" class="dropdown-item" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                                <button id="logout" type="submit" class="nav-link btn btn-link text-dark">Logout</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            <main class="dash-content">
+                <div class="container-fluid">
+                    @RenderBody()
+                </div>
+            </main>
+        </div>
+    </div>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    @* Spur js *@
+    <script src="~/lib/spur/dist/js/spur.js"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>

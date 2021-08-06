@@ -1,0 +1,60 @@
+﻿@{
+    ViewData["Title"] = "View Closed Tickets";
+}
+@model BugTracker.ViewModels.ClosedTicketViewModel
+
+
+
+
+<h1 class="dash-title">Closed Tickets</h1>
+<table class="table table-striped table-bordered table-hover">
+    @* Project list *@
+    @if (Model.closedTicketList.Count != 0)
+    {
+        <tr>
+            <td>Project Parent</td>
+            <td>Ticket Title</td>
+            <td>Date Closed</td>
+            <td>User Who Closed</td>
+            <td>User Who Opened</td>
+            <td></td>
+        </tr>
+
+        @foreach (var item in Model.closedTicketList)
+        {
+            <tr>
+                <td>
+                    @item.ProjectParentReadable
+                </td>
+
+                <td>
+                    @item.TicketTitle
+                </td>
+
+                <td>
+                    @item.DateClosed
+                </td>
+
+                <td>
+                    @item.UserWhoClosedName
+                </td>
+
+                <td>
+                    @item.UserWhoOpenedName
+                </td>
+
+                <td class="text-center">
+                    <a asp-controller="ClosedTicket" asp-action="Details" asp-route-ticketId="@item.TicketClosed" asp-route-projectId="@item.ProjectParent" class="btn btn-sm btn-outline-primary">Details</a>
+                </td>
+            </tr>
+        }
+    }
+    else
+    {
+        <tr>
+            <td>
+                Looks like there are no closed tickets
+            </td>
+        </tr>
+    }
+</table>

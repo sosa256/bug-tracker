@@ -1,0 +1,104 @@
+﻿@{
+    ViewData["Title"] = "View Closed Tickets";
+}
+@model BugTracker.ViewModels.ClosedTicketDetailsViewModel
+
+
+
+
+<h1 class="dash-title">Details</h1>
+
+@* Buttons *@
+<div class=" pb-3">
+    <a asp-controller="ClosedTicket" asp-action="Index" class="btn btn-sm btn-outline-primary">Back</a>
+    <a asp-controller="ClosedTicket" asp-action="Delete" asp-route-ticketId="@Model.closedTicketReadable.TicketClosed" asp-route-projectId="@Model.closedTicketReadable.ProjectParent" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure? This will delete the original Ticket as well.');">Delete</a>
+</div>
+
+@* General info card *@
+<div class="card spur-card ">
+    @* Header *@
+    <div class="card-header bg-dark text-white">
+        <div class="spur-card-icon">
+            <i class="fas fa-chart-bar"></i>
+        </div>
+
+        <div class="spur-card-title">
+            General
+        </div>
+    </div>
+
+    @* Body *@
+    <div class="card-body ">
+        <ul>
+            <li>Ticket Title: @Model.closedTicketReadable.TicketTitle</li>
+            <li>Project opened on: @Model.closedTicketReadable.ProjectParentReadable</li>
+
+            <li>Date Closed: @Model.closedTicketReadable.DateClosed</li>
+
+            <li>Opened by: @Model.closedTicketReadable.UserWhoOpenedName</li>
+            <li>Closed by: @Model.closedTicketReadable.UserWhoClosedName</li>
+        </ul>
+    </div>
+</div>
+
+@* Unwanted behavior card *@
+<div class="card spur-card ">
+    @* Header *@
+    <div class="card-header bg-dark text-white">
+        <div class="spur-card-icon">
+            <i class="fas fa-chart-bar"></i>
+        </div>
+
+        <div class="spur-card-title">
+            Unwanted Behavior
+        </div>
+    </div>
+
+    @* Body *@
+    <div class="card-body ">
+        @Model.UnwantedBehavior
+    </div>
+</div>
+
+
+@* Cause card *@
+<div class="card spur-card ">
+    @* Header *@
+    <div class="card-header bg-dark text-white">
+        <div class="spur-card-icon">
+            <i class="fas fa-chart-bar"></i>
+        </div>
+
+        <div class="spur-card-title">
+            Cause
+        </div>
+    </div>
+
+    @* Body *@
+    <div class="card-body ">
+        @Model.UnwantedBehaviorCause
+    </div>
+</div>
+
+
+@* Solution card *@
+<div class="card spur-card ">
+    @* Header *@
+    <div class="card-header bg-dark text-white">
+        <div class="spur-card-icon">
+            <i class="fas fa-chart-bar"></i>
+        </div>
+
+        <div class="spur-card-title">
+            Solution
+        </div>
+    </div>
+
+    @* Body *@
+    <div class="card-body ">
+        @Model.UnwantedBehaviorSolution
+    </div>
+</div>
+
+@* Back button *@
+<a asp-controller="ClosedTicket" asp-action="Index" class="btn btn-sm btn-outline-primary">Back</a>

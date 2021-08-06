@@ -51,6 +51,7 @@ namespace BugTracker.Controllers
             return View(pizza);
         }
 
+        // TODO: Learn how to make confirmation notification.
         [HttpPost]
         public async Task<ActionResult> RoleUpdateAsync(IFormCollection collection)
         {
@@ -64,6 +65,13 @@ namespace BugTracker.Controllers
             // Update my database.
             string query = "UPDATE BTUsers SET BTUsers.Role = @roleId WHERE BTUsers.Id = @userId;";
             _db.Execute(query, new { roleId = newRoleId, userId = currUserId } );
+
+            if (currUserIdentityId == "")
+            {
+                // The user is a dummy account
+                // no need to update ASP Identity tables 
+                return RedirectToAction("Assignment");
+            }
 
             // Update ASP Identity database (to correctly enable authorization).
             // Delete any and all entries of the currUser from the DB.
@@ -160,6 +168,7 @@ namespace BugTracker.Controllers
 
 
         // GET: Role/Delete/5
+        // TODO: Learn how to make nice alerts.
         [HttpGet]
         public ActionResult Delete(string id)
         {

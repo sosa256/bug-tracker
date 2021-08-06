@@ -1,0 +1,58 @@
+﻿@{
+    ViewData["Title"] = "Edit Bug Ticket";
+}
+@model BugTracker.ViewModels.BugTicketEditViewModel
+
+
+
+<h1 class="dash-title">Edit Bug Ticket</h1>
+<h2>@Model.currTicket.ProjectParentReadable</h2>
+<form asp-controller="BugTicket" asp-action="Edit" method="post">
+    @Html.HiddenFor(model => model.currTicket.Id)
+
+
+    <div class="form-row">
+        @* Severity *@
+        <div class="form-group col-md-6">
+            <label asp-for="@Model.currTicket.Severity"></label>
+            <select asp-items="@(Html.GetEnumSelectList<BugTracker.Models.TicketSeverity>())" asp-for="@Model.currTicket.Severity" class="form-control"></select>
+        </div>
+    </div>
+
+    <div class="form-row">
+        @* Title *@
+        <div class="form-group col-md-6">
+            <label asp-for="@Model.currTicket.Title"></label>
+            <input asp-for="@Model.currTicket.Title" class="form-control" placeholder="Informative title" />
+        </div>
+    </div>
+
+
+    <div class="form-row">
+        @* Unwanted Behavior *@
+        <div class="form-group col-md-12">
+            <label asp-for="@Model.currTicket.UnwantedBehavior"></label>
+            <textarea asp-for="@Model.currTicket.UnwantedBehavior" rows="4" class="form-control" placeholder="Be as specific as possible"></textarea>
+        </div>
+    </div>
+
+
+    <div class="form-row">
+        @* Repeatable Steps *@
+        <div class="form-group col-md-12">
+            <label asp-for="@Model.currTicket.RepeatableSteps"></label>
+            <textarea asp-for="@Model.currTicket.RepeatableSteps" rows="4" class="form-control" placeholder="1. &#10;2.&#10;3."></textarea>
+        </div>
+    </div>
+
+    @* Buttons *@
+    <div class="text-right">
+        <a asp-controller="BugTicket" asp-action="Manage" class="btn btn-sm btn-outline-danger">Cancel</a>
+
+        <button type="submit" class="btn btn-success">Create</button>
+    </div>
+
+    @Html.ValidationSummary()
+</form>
+
+

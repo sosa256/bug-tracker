@@ -1,0 +1,68 @@
+﻿@{
+    ViewData["Title"] = "Manage Projects";
+}
+@model BugTracker.ViewModels.ProjectViewModel
+
+
+
+
+<h1>Manage Projects</h1>
+<table class="table table-striped table-bordered table-hover" style="max-width: 600px;">
+    @* Create project field *@
+    <tr>
+        <td colspan="3">
+            @using (var form = Html.BeginForm("Create", "Project", FormMethod.Post))
+            {
+                <div class="input-group">
+                    @* Textbox *@
+                    <input asp-for="@Model.currProject.Title" class="form-control" placeholder="New project title" />
+
+                    @* Create button *@
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-success">Create</button>
+                    </div>
+                </div>
+                @Html.ValidationSummary()
+            }
+        </td>
+    </tr>
+
+    @* Project list *@
+    @if (Model.projReadableList.Count != 0)
+    {
+        <tr>
+            <td>Title</td>
+            <td>Owner</td>
+            <td></td>
+        </tr>
+
+        @foreach (var item in Model.projReadableList)
+        {
+            <tr>
+                @* Title, Owner, btns *@
+                <td>
+                    <a href="/Project/Details/@item.Id">@item.Title</a>
+                </td>
+
+                <td>
+                    @* Make the view model somehow include the full name of the owner *@
+                    @item.OwnerReadable
+                </td>
+
+                <td class="text-center">
+                    <a href="/Project/Update/@item.Id" class="btn btn-sm btn-outline-primary">Rename</a>
+
+                    <a href="/Project/Delete/@item.Id" onclick="return confirm('Are you sure?');" class="btn btn-sm btn-outline-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    }
+    else
+    {
+        <tr>
+            <td>
+                Looks like there are no Projects!<br>Make some with the create button
+            </td>
+        </tr>
+    }
+</table>

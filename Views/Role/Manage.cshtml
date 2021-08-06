@@ -1,4 +1,7 @@
 ﻿@* Modified view code from: https://asp.mvc-tutorial.com/working-with-databases/todo-list-the-view/ *@
+@{
+    ViewData["Title"] = "Manage Roles";
+}
 @model BugTracker.ViewModels.RoleViewModel
 
 
@@ -8,7 +11,7 @@
 <table class="table table-striped table-bordered table-hover" style="max-width: 500px;">
     @* Create roles field *@
     <tr>
-        <td colspan="3">
+        <td colspan="2">
             @using (var form = Html.BeginForm("Create", "Role", FormMethod.Post))
             {
                 <div class="input-group">
@@ -36,9 +39,9 @@
                     @item.Name
                 </td>
 
-                <td class="text-center" >
+                <td class="text-center">
                     <a href="/Role/Update/@item.Id" class="btn btn-sm btn-primary">Rename</a>
-                
+
                     <a href="/Role/Delete/@item.Id" onclick="return confirm('Are you sure?');" class="btn btn-sm btn-danger">Delete</a>
                 </td>
             </tr>

@@ -2,8 +2,9 @@
 
 namespace BugTracker.Models
 {
-    public class ProjectModel
+    public class Project
     {
+        // PROPERTIES
         public int Id { get; set; }
 
         [MinLength(3, ErrorMessage = "Title must contain at least three characters")]

@@ -1,0 +1,64 @@
+﻿@{
+    ViewData["Title"] = "View Bug Tickets";
+}
+@model BugTracker.ViewModels.BugTicketViewModel
+
+
+
+
+<h1 class="dash-title">Manage Bug Tickets</h1>
+<table class="table table-striped table-bordered table-hover">
+    @* Project list *@
+    @if (Model.bugTicketReadableList.Count != 0)
+    {
+        <tr>
+            <td>Severity</td>
+            <td>Status</td>
+            <td>Title</td>
+            <td>ProjectParent</td>
+            <td></td>
+        </tr>
+
+        @foreach (var item in Model.bugTicketReadableList)
+        {
+            <tr>
+                @* Severity, Status, ProjectParent, Title, btns *@
+                <td>
+                    @* Turn int to string *@
+                    @item.SeverityReadable
+                </td>
+
+                <td>
+                    @* Turn int to string *@
+                    @item.StatusReadable
+                </td>
+
+                <td>
+                    @item.Title
+                </td>
+
+                <td>
+                    @* Turn int to string *@
+                    @item.ProjectParentReadable
+                </td>
+
+
+                <td class="text-center">
+
+                    <a asp-controller="BugTicket" asp-action="Details" asp-route-ticketId="@item.Id" class="btn btn-sm btn-outline-primary">Details</a>
+                </td>
+            </tr>
+        }
+    }
+    else
+    {
+        <tr>
+            <td>
+                Looks like there are no Tickets<br>Make some with the create button
+            </td>
+        </tr>
+    }
+</table>
+
+<a asp-controller="BugTicket" asp-action="Create" class="btn btn-sm btn-outline-success">Create</a>
+

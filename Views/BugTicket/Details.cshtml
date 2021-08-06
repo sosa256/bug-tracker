@@ -1,0 +1,142 @@
+﻿@{
+    ViewData["Title"] = "Bug Tickets Details";
+}
+@model BugTracker.ViewModels.BugTicketDetailsViewModel
+
+
+
+
+<h1 class="dash-title">@Model.currTicketReadable.Title</h1>
+<h2>@Model.parentProject.Title</h2>
+
+@* Buttons *@
+<div class=" pb-3">
+    <a asp-controller="BugTicket" asp-action="Edit" asp-route-ticketId="@Model.currTicketReadable.Id" class="btn btn-sm btn-outline-success">Edit</a>
+    @* TODO: Make this action only avalible to the owner and Admins through here and the controller. *@
+    <a asp-controller="BugTicket" asp-action="Delete" asp-route-ticketId="@Model.currTicketReadable.Id" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?');">Delete</a>
+    <a asp-controller="BugTicket" asp-action="History" asp-route-historyId="@Model.currTicketReadable.HistoryId" class="btn btn-sm btn-outline-primary">History</a>
+</div>
+
+
+<div class="card spur-card " style="max-width: 500px;">
+    @* Ticket header *@
+    <div class="card-header bg-dark text-white">
+        <div class="spur-card-icon">
+            <i class="fas fa-chart-bar"></i>
+        </div>
+
+        <div class="spur-card-title">
+            Id: @Model.currTicketReadable.Id<br />
+            Created: @Model.currTicketReadable.DateCreated
+        </div>
+    </div>
+
+    @* Ticket body *@
+    <div class="card-body ">
+        @* Unwanted Behavior  *@
+        <div class="card spur-card ">
+            <div class="card-header bg-danger text-white">
+                <div class="spur-card-icon">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <div class="spur-card-title"> Unwanted Behavior </div>
+            </div>
+            <div class="card-body ">@Model.currTicketReadable.UnwantedBehavior</div>
+        </div>
+
+        @* Repeatable Steps *@
+        <div class="card spur-card">
+            <div class="card-header bg-primary text-white">
+                <div class="spur-card-icon">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <div class="spur-card-title"> Repeatable Steps </div>
+            </div>
+            <div class="card-body ">@Model.currTicketReadable.RepeatableSteps</div>
+        </div>
+
+        <h3>Other details</h3>
+        <ul>
+            <li>Opened by: @Model.currTicketReadable.OpenedByReadable</li>
+            <li>Severity: @Model.currTicketReadable.SeverityReadable</li>
+            <li>Status: @Model.currTicketReadable.StatusReadable</li>
+        </ul>
+
+        @* Buttons *@
+        <div class="text-right">
+            <a asp-controller="BugTicket" asp-action="Close" asp-route-ticketId="@Model.currTicketReadable.Id" class="btn btn-sm btn-outline-warning">Close</a>
+            <a asp-controller="BugTicket" asp-action="Manage" class="btn btn-sm btn-outline-danger">Back</a>
+        </div>
+
+    </div> @* Ticket Body *@
+</div>
+
+
+@* Comment Button *@
+@* Modified code from: https://hackerthemes.com/bootstrap-cheatsheet/#collapse *@
+<p>
+    <button class="btn btn-outline-success collapsed" type="button" data-toggle="collapse" data-target="#CommentForm" aria-expanded="false" aria-controls="CommentForm">
+        <i class="fas fa-comments"></i>
+        Comment
+    </button>
+</p>
+<div class="collapse" id="CommentForm" style="">
+    <div class="card card-body">
+        <form asp-controller="Comment" asp-action="Create" asp-route-returnticketId="@Model.currTicketReadable.Id" method="post">
+            @* Textbox *@
+            <textarea asp-for="@Model.newComment.Msg" rows="4" class="form-control" placeholder="Say something..."></textarea>
+            @* submit btn *@
+            <div class="text-right pt-3">
+                <button type="submit" class="btn btn-success">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@* Comments here *@
+@if (Model.CommentList.Count == 0)
+{
+    <hr />
+    <p>There are no comments yet</p>
+}
+else
+{
+    foreach (var item in Model.CommentList)
+    {
+        <hr />
+        @*<div class="card spur-card "></div>*@
+        <div class="card spur-card card-body col-md-8 ">
+
+            @* Row one *@
+            <div>
+                @* Icon, Username, Date  *@
+                <i class="fas fa-user"></i>
+                @item.OwnerReadable |
+                @item.DateCreated
+            </div>
+
+            @* Row two *@
+            <div>
+                @item.Msg
+            </div>
+
+            @* Row three *@
+            <div class="text-right">
+                @* three dot menu *@
+                @* Only show if they are the owner *@
+                <div class="dropdown show">
+                    <a href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-caret-down text-dark "></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                        <a class="dropdown-item" asp-controller="Comment" asp-action="Edit" asp-route-commentId="@item.Id" asp-route-returnticketId="@Model.currTicketReadable.Id">Edit</a>
+                        <a class="dropdown-item" asp-controller="Comment" asp-action="Delete" asp-route-commentId="@item.Id" asp-route-returnticketId="@Model.currTicketReadable.Id">Delete</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    }
+}
+

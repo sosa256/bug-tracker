@@ -1,0 +1,62 @@
+﻿@{
+    ViewData["Title"] = "Project Assignment";
+}
+@model BugTracker.ViewModels.ProjectsAssignViewModel
+
+<h1>@Model.project.Title</h1>
+<h2 class="pt-2">Free Users</h2>
+
+<table class="table table-striped table-bordered table-hover" style="max-width: 600px;">
+    @* Project list *@
+    @if (Model.freeUsers.Count != 0)
+    {
+        <tr class="text-center">
+            <td>Username</td>
+            <td>Full Name</td>
+            <td></td>
+        </tr>
+
+        @foreach (var item in Model.freeUsers)
+        {
+            <tr>
+                @* Username, Fullname, btns *@
+                <td>
+                    @item.UserName
+                </td>
+
+                <td>
+                    @item.FirstName @item.LastName
+                </td>
+
+                <td class="text-center">
+                    @using (var form = Html.BeginForm("Assign", "Project", FormMethod.Post))
+                    {
+                        @Html.HiddenFor(model => item.Id)
+                        @Html.HiddenFor(model => Model.project.Id)
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-success" onclick="return confirm('Are you sure?');">Assign</button>
+                        </div>
+                    }
+                    @*<a href="/Project/Unassign/@item.Id" onclick="return confirm('Are you sure?');" class="btn btn-sm btn-danger">Remove</a>*@
+                </td>
+
+                @*<td class="text-center">
+                        <a href="/Project/Update/@item.Id" class="btn btn-sm btn-primary">Rename</a>
+
+                        <a href="/Project/Delete/@item.Id" onclick="return confirm('Are you sure?');" class="btn btn-sm btn-danger">Delete</a>
+                    </td>*@
+            </tr>
+        }
+    }
+    else
+    {
+        <tr>
+            <td>
+                All users are currently assigned to a Project!<br>
+            </td>
+        </tr>
+    }
+</table>
+
+@* Back button *@
+<a asp-controller="Project" asp-action="Details" asp-route-id="@Model.project.Id" class="btn btn-sm btn-outline-primary">Back</a>
