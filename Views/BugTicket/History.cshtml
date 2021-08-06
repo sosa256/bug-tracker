@@ -10,6 +10,7 @@
     Bug Ticket History<br />
     <a asp-controller="BugTicket" asp-action="Details" asp-route-ticketId="@Model.mostCurrTicketId" class="btn btn-sm btn-outline-danger">Back</a>
 </h1>
+<h4> Newest </h4>
 @foreach (TicketReadable item in Model.ticketHistory)
  {
     <div class="card spur-card " style="max-width: 500px;">
@@ -61,3 +62,5 @@
         </div> @* <div class="card-body "> *@
     </div> @* <div class="card spur-card " style="max-width: 500px;"> *@
  }
+
+<h4> Oldest </h4>

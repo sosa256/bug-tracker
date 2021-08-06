@@ -184,10 +184,12 @@ namespace BugTracker.Controllers
             // Begin processing the list.
             foreach (Project item in projList)
             {
+                string ownerFullName = _db.Query<string>(getProjNameQuery, new { projId = item.Id }).FirstOrDefault();
+
                 ProjectReadable readable = new ProjectReadable(
                     item,
                     // Create the OpenedBy string.
-                    _db.Query<string>(getProjNameQuery, new { projId = item.Id }).First()
+                    ownerFullName
                 );
 
                 ret.Add(readable);

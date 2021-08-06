@@ -1,0 +1,72 @@
+﻿@{
+    ViewData["Title"] = "Close Bug Ticket";
+}
+@model BugTracker.ViewModels.TicketCloseViewModel
+
+
+
+<h1 class="dash-title">Close Bug Ticket</h1>
+<h2>Closing: @Model.ticketToClose.Title</h2>
+<form asp-controller="BugTicket" asp-action="Close" asp-route-ticketId="@Model.ticketToClose.Id" method="post">
+
+    <div class="card spur-card ">
+        @* Header *@
+        <div class="card-header bg-dark text-white">
+            <div class="spur-card-icon">
+                <i class="fas fa-chart-bar"></i>
+            </div>
+
+            <div class="spur-card-title">
+                Cause
+            </div>
+        </div>
+
+        @* Body *@
+        <div class="card-body ">
+            <div class="form-row">
+                @* Unwanted Behavior Cause *@
+                <div class="form-group col-md-12">
+                    <textarea asp-for="@Model.emptyCloseModel.UnwantedBehaviorCause" rows="4" class="form-control" placeholder="Be as specific as possible"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card spur-card ">
+        @* Header *@
+        <div class="card-header bg-success text-white">
+            <div class="spur-card-icon">
+                <i class="fas fa-chart-bar"></i>
+            </div>
+
+            <div class="spur-card-title">
+                Solution
+            </div>
+        </div>
+
+
+        @* Body *@
+        <div class="card-body ">
+            <div class="form-group">
+                @* Temp Solution Checkbox *@
+                <input asp-for="@Model.emptyCloseModel.IsTemp" />
+                <label asp-for="@Model.emptyCloseModel.IsTemp"></label>
+            </div>
+
+            <div class="form-row">
+                @* Solution Steps *@
+                <div class="form-group col-md-12">
+                    <textarea asp-for="@Model.emptyCloseModel.UnwantedBehaviorSolution" rows="4" class="form-control" placeholder="Be as specific as possible"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* Buttons *@
+    <div class="text-right">
+        <a asp-controller="BugTicket" asp-action="Details" asp-route-ticketId="@Model.ticketToClose.Id" class="btn btn-sm btn-outline-danger">Cancel</a>
+
+        <button type="submit" class="btn btn-outline-warning">Close</button>
+    </div>
+
+</form>

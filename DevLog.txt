@@ -178,21 +178,22 @@ Create Ticket for design looks nicer.
 History back button works correctly.
 BugTicket/Details/(?id) process user input before using it.
 
+08/04/2021 1:16 PM
+Tickets can now be closed.
+
+08/05/2021 5:01 PM
+Closed Ticket functionality complete.
+Can now delete tickets.
 
 
 
 TODO
-History
-update bug ticket
 
-Close  bug ticket
-delete bug ticket
+comment model
+comment button view
+comment controller
+comment view
 
-(page:details) display all properties of curr bugTicket
-	(action) allow properties to be edited
-	(action) show ticket history by date most curr first
-(page) list all closedBugTickets
-	(action) allow tickets to be reopened
 
 use https://www.datatables.net/ for nice DB tables
 
@@ -211,3 +212,5 @@ Add validations to create project
 create a cronjob or something to make Ticket Status change from New to InProgress after 24hrs
 
 make sure to process ALL user input before using it
+
+Fix the Get/Post comments

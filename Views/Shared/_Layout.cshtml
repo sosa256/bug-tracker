@@ -29,7 +29,7 @@
                 <a asp-controller="Home" asp-action="Index" class="spur-logo">
                     <i class="fas fa-bug"></i>
                     @* adding another character makes dash-nav-list out of place *@
-                    <span>BugTracker</span>
+                    Bug Tracker
                 </a>
             </header>
 
@@ -66,6 +66,7 @@
                     </a>
                     <div class="dash-nav-dropdown-menu">
                         <a asp-controller="BugTicket" asp-action="Manage" class="dash-nav-dropdown-item">Manage</a>
+                        <a asp-controller="ClosedTicket" asp-action="Index" class="dash-nav-dropdown-item">Closed Tickets</a>
                     </div>
                 </div>
                 @*May use this part of the template later

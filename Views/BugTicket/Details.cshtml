@@ -12,6 +12,8 @@
 @* Buttons *@
 <div class=" pb-3">
     <a asp-controller="BugTicket" asp-action="Edit" asp-route-ticketId="@Model.currTicketReadable.Id" class="btn btn-sm btn-outline-success">Edit</a>
+    @* TODO: Make this action only avalible to the owner and Admins through here and the controller. *@
+    <a asp-controller="BugTicket" asp-action="Delete" asp-route-ticketId="@Model.currTicketReadable.Id" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?');">Delete</a>
     <a asp-controller="BugTicket" asp-action="History" asp-route-historyId="@Model.currTicketReadable.HistoryId" class="btn btn-sm btn-outline-primary">History</a>
 </div>
 
@@ -67,6 +69,6 @@
         </div>
 
     </div> @* Ticket Body *@
-</div> @* Ticket Header *@
+</div> 
 
 @* Comments here *@
