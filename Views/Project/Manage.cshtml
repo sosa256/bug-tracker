@@ -15,7 +15,7 @@
             {
                 <div class="input-group">
                     @* Textbox *@
-                    @Html.TextBoxFor(model => model.currProject.Title, new { @class = "form-control" })
+                    <input asp-for="@Model.currProject.Title" class="form-control" placeholder="New project title" />
 
                     @* Create button *@
                     <div class="input-group-append">

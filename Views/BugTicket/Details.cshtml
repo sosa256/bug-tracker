@@ -69,6 +69,74 @@
         </div>
 
     </div> @* Ticket Body *@
-</div> 
+</div>
+
+
+@* Comment Button *@
+@* Modified code from: https://hackerthemes.com/bootstrap-cheatsheet/#collapse *@
+<p>
+    <button class="btn btn-outline-success collapsed" type="button" data-toggle="collapse" data-target="#CommentForm" aria-expanded="false" aria-controls="CommentForm">
+        <i class="fas fa-comments"></i>
+        Comment
+    </button>
+</p>
+<div class="collapse" id="CommentForm" style="">
+    <div class="card card-body">
+        <form asp-controller="Comment" asp-action="Create" asp-route-returnticketId="@Model.currTicketReadable.Id" method="post">
+            @* Textbox *@
+            <textarea asp-for="@Model.newComment.Msg" rows="4" class="form-control" placeholder="Say something..."></textarea>
+            @* submit btn *@
+            <div class="text-right pt-3">
+                <button type="submit" class="btn btn-success">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 
 @* Comments here *@
+@if (Model.CommentList.Count == 0)
+{
+    <hr />
+    <p>There are no comments yet</p>
+}
+else
+{
+    foreach (var item in Model.CommentList)
+    {
+        <hr />
+        @*<div class="card spur-card "></div>*@
+        <div class="card spur-card card-body col-md-8 ">
+
+            @* Row one *@
+            <div>
+                @* Icon, Username, Date  *@
+                <i class="fas fa-user"></i>
+                @item.OwnerReadable |
+                @item.DateCreated
+            </div>
+
+            @* Row two *@
+            <div>
+                @item.Msg
+            </div>
+
+            @* Row three *@
+            <div class="text-right">
+                @* three dot menu *@
+                @* Only show if they are the owner *@
+                <div class="dropdown show">
+                    <a href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-caret-down text-dark "></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                        <a class="dropdown-item" asp-controller="Comment" asp-action="Edit" asp-route-commentId="@item.Id" asp-route-returnticketId="@Model.currTicketReadable.Id">Edit</a>
+                        <a class="dropdown-item" asp-controller="Comment" asp-action="Delete" asp-route-commentId="@item.Id" asp-route-returnticketId="@Model.currTicketReadable.Id">Delete</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    }
+}
+

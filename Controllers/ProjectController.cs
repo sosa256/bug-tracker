@@ -29,6 +29,7 @@ namespace BugTracker.Controllers
 
 
         // ACTIONS / METHODS
+
         // GET: Project/Details/5
         // Find a way to strip away the stringId and any other properties not needed.
         public ActionResult Details(int id)
@@ -115,9 +116,21 @@ namespace BugTracker.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(IFormCollection collection)
         {
+            // Generate a projectId.
+            string getMaxProjectIdQuery = "SELECT Projects.Id FROM Projects ORDER BY Projects.Id DESC;";
+            // Make sure there is something in the database. Default is 0.
+            int extractedMax = _db.Query<int>(getMaxProjectIdQuery).FirstOrDefault();
+            int ticketId = extractedMax + 1;
+
             // Insert new project to myDB.
-            string query = "INSERT INTO Projects(Title) VALUES( @title );";
-            _db.Execute(query, new { title = collection["currProject.Title"].ToString() });
+            string insertProjectQuery = "INSERT INTO Projects VALUES( @queryTicketId, @title, @ownerId );";
+            var parameters = new { 
+                queryTicketId = ticketId,
+                title = collection["currProject.Title"].ToString(),
+                // TODO: Get ownerId from Identity Logged in user.
+                ownerId = 1
+            };
+            _db.Execute(insertProjectQuery, parameters);
 
             return RedirectToAction("Manage");
         }

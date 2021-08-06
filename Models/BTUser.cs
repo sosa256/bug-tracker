@@ -24,7 +24,9 @@ namespace BugTracker.Models
         public int Administrator { get; set; }
 
 
-        // Constructors
+
+
+        // CONSTRUCTORS
         public BTUser()
         {
             this.Id = 0;

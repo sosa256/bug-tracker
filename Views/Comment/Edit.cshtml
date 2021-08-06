@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "Edit Comment";
+}
+@model BugTracker.ViewModels.CommentEditViewModel
+
+
+<h1 class="dash-title">Edit Comment</h1>
+<form asp-controller="Comment" asp-action="Edit" asp-route-returnticketId="@Model.ReturnTicketId" asp-route-commentId="@Model.currComment.Id" method="post">
+    <div class="input-group">
+        
+        @* Textbox *@
+        <input asp-for="@Model.currComment.Msg" class="form-control"/>
+
+        @* Update button *@
+        <div class="input-group-append">
+            <button type="submit" class="btn btn-success">Rename</button>
+        </div>
+    </div>
+</form>
+
+@* Cancel button *@

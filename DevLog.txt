@@ -185,15 +185,27 @@ Tickets can now be closed.
 Closed Ticket functionality complete.
 Can now delete tickets.
 
+08/05/2021 6:10 PM
+comment model made
+
+08/06/2021 10:51 AM
+Ticket and Project Ids are now generated on the server.
+	In order to reduce gaps between Ids.
+
+08/06/2021 1:55 PM
+Comments can now be made below a ticket.
+
+08/06/2021 3:02 PM
+Comment CRUD operations complete.
+
+
 
 
 TODO
-
-comment model
-comment button view
-comment controller
-comment view
-
+[Login stuff]
+use the Authorization to restric actions
+make create role action inaccessible
+make role assignment only for Administrator role
 
 use https://www.datatables.net/ for nice DB tables
 
@@ -202,15 +214,14 @@ in RoleController use the view models correctly by haveing the action have the m
 
 make a helper with a list of query actions
 
-use the Authorization to restric actions
-make create role action inaccessible
-make role assignment only for Administrator role
-
 Add validations to login and show errors on a failed login (pw or un was bad)
 Add validations to create project
 
 create a cronjob or something to make Ticket Status change from New to InProgress after 24hrs
 
-make sure to process ALL user input before using it
-
 Fix the Get/Post comments
+
+make sure to process ALL user input before using it
+make some asp-route-dataName into hidden form fields
+
+clean up code
