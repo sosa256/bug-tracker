@@ -1,8 +1,5 @@
 ﻿using BugTracker.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BugTracker.ViewModels
 {
@@ -11,5 +8,35 @@ namespace BugTracker.ViewModels
         // PROPERTIES
         public List<ProjectReadable> projReadableList;
         public Project currProject;
+        public string errorMsg = "";
+
+
+
+
+        // CONSTRUCTOR
+        public ProjectViewModel(List<ProjectReadable> projectList)
+        {
+            this.projReadableList = projectList;
+        }
+
+
+        public ProjectViewModel(Project currProject, string errorMsg)
+        {
+            this.currProject = currProject;
+            this.errorMsg = errorMsg;
+        }
+
+
+        public ProjectViewModel(List<ProjectReadable> projectList, string errorMsg)
+        {
+            this.projReadableList = projectList;
+            this.errorMsg = errorMsg;
+        }
+
+
+        public ProjectViewModel(Project currProject)
+        {
+            this.currProject = currProject;
+        }
     }
 }

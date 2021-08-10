@@ -32,5 +32,44 @@ namespace BugTracker.Models
         public int OpenedBy { get; set; }
         [DataType(DataType.DateTime)]
         public DateTime DateCreated { get; set; }
+
+
+
+
+        // CONSTRUCTORS
+        public Ticket(
+            int projectParent,   int id,       int historyId, bool isCurr, 
+            string title,        int severity, int status,    string unwantedBehavior, 
+            string repeatableSteps, int openedBy, DateTime dateCreated)
+        {
+            this.ProjectParent = projectParent;
+            this.Id = id;
+            this.HistoryId = historyId;
+            this.IsCurr = isCurr;
+            this.Title = title;
+            this.Severity = severity;
+            this.Status = status;
+            this.UnwantedBehavior = unwantedBehavior;
+            this.RepeatableSteps = repeatableSteps;
+            this.OpenedBy = openedBy;
+            this.DateCreated = dateCreated;
+        }
+
+        public Ticket( Ticket ticket) 
+        {
+            this.ProjectParent = ticket.ProjectParent;
+            this.Id        = ticket.Id;
+            this.HistoryId = ticket.HistoryId;
+            this.IsCurr    = ticket.IsCurr;
+            this.Title     = ticket.Title;
+            this.Severity  = ticket.Severity;
+            this.Status    = ticket.Status;
+            this.UnwantedBehavior = ticket.UnwantedBehavior;
+            this.RepeatableSteps  = ticket.RepeatableSteps;
+            this.OpenedBy    = ticket.OpenedBy;
+            this.DateCreated = ticket.DateCreated;
+        }
+
+        public Ticket() {  }
     }
 }

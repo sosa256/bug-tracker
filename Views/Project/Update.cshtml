@@ -1,11 +1,8 @@
-﻿@{
-    ViewData["Title"] = "Rename Project";
-}
+﻿@{ ViewData["Title"] = "Rename Project"; }
 @model BugTracker.ViewModels.ProjectViewModel
 
 <h1>Rename Project</h1>
-@using (var form = Html.BeginForm("Update", "Project", FormMethod.Post))
-{
+<form asp-controller="Project" asp-action="Update" method="post">
     <div class="input-group">
         @* Textbox *@
         @Html.TextBoxFor(model => model.currProject.Title, new { @class = "form-control" })
@@ -15,7 +12,13 @@
             <button type="submit" class="btn btn-success">Rename</button>
         </div>
     </div>
-}
+    @if (Model.errorMsg != "")
+    {
+        <ul>
+            <li style="color:red">@Model.errorMsg</li>
+        </ul>
+    }
+</form>
 
 @* Cancel button *@
 <a asp-controller="Project" asp-action="Manage" class="btn btn-sm btn-danger">Cancel</a>

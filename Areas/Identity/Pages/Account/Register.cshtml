@@ -72,6 +72,16 @@
 
                 </div>
 
+                @* First and Last name fields *@
+                <div class="form-group">
+                    <input asp-for="Input.FirstName" class="form-control" placeholder="Enter first name" />
+                    <input asp-for="Input.LastName" class="form-control " placeholder="Enter last name" />
+                    <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                    <span asp-validation-for="Input.LastName" class="text-danger"></span>
+
+                </div>
+
+
                 @* Password field *@
                 <div class="form-group">
                     <input asp-for="Input.Password" class="form-control" placeholder="Password" />

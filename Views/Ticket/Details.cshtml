@@ -1,7 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Bug Tickets Details";
 }
-@model BugTracker.ViewModels.BugTicketDetailsViewModel
+@model BugTracker.ViewModels.TicketDetailsViewModel
 
 
 
@@ -10,11 +10,14 @@
 <h2>@Model.parentProject.Title</h2>
 
 @* Buttons *@
-<div class=" pb-3">
-    <a asp-controller="BugTicket" asp-action="Edit" asp-route-ticketId="@Model.currTicketReadable.Id" class="btn btn-sm btn-outline-success">Edit</a>
+<div class="input-group pb-3">
+    <a asp-controller="Ticket" asp-action="Edit" asp-route-ticketId="@Model.currTicketReadable.Id" class="btn btn-sm btn-outline-success input-group-append ">Edit</a>
     @* TODO: Make this action only avalible to the owner and Admins through here and the controller. *@
-    <a asp-controller="BugTicket" asp-action="Delete" asp-route-ticketId="@Model.currTicketReadable.Id" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?');">Delete</a>
-    <a asp-controller="BugTicket" asp-action="History" asp-route-historyId="@Model.currTicketReadable.HistoryId" class="btn btn-sm btn-outline-primary">History</a>
+    <form asp-controller="Ticket" asp-action="Delete" asp-route-ticketId="@Model.currTicketReadable.Id" method="post" class="pl-2 pr-2">
+        <button type="submit" class="btn btn-sm btn-outline-danger input-group-append" onclick="return confirm('Are you sure?');">Delete</button>
+    </form>
+    @*<a asp-controller="Ticket" asp-action="Delete" asp-route-ticketId="@Model.currTicketReadable.Id" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?');">Delete</a>*@
+    <a asp-controller="Ticket" asp-action="History" asp-route-historyId="@Model.currTicketReadable.HistoryId" class="btn btn-sm btn-outline-primary input-group-append">History</a>
 </div>
 
 
@@ -64,8 +67,8 @@
 
         @* Buttons *@
         <div class="text-right">
-            <a asp-controller="BugTicket" asp-action="Close" asp-route-ticketId="@Model.currTicketReadable.Id" class="btn btn-sm btn-outline-warning">Close</a>
-            <a asp-controller="BugTicket" asp-action="Manage" class="btn btn-sm btn-outline-danger">Back</a>
+            <a asp-controller="Ticket" asp-action="Close" asp-route-ticketId="@Model.currTicketReadable.Id" class="btn btn-sm btn-outline-warning">Close</a>
+            <a asp-controller="Ticket" asp-action="Manage" class="btn btn-sm btn-outline-danger">Back</a>
         </div>
 
     </div> @* Ticket Body *@
@@ -80,18 +83,44 @@
         Comment
     </button>
 </p>
-<div class="collapse" id="CommentForm" style="">
-    <div class="card card-body">
-        <form asp-controller="Comment" asp-action="Create" asp-route-returnticketId="@Model.currTicketReadable.Id" method="post">
-            @* Textbox *@
-            <textarea asp-for="@Model.newComment.Msg" rows="4" class="form-control" placeholder="Say something..."></textarea>
-            @* submit btn *@
-            <div class="text-right pt-3">
-                <button type="submit" class="btn btn-success">Submit</button>
-            </div>
-        </form>
+@if (Model.ErrorExists)
+{
+    <div class="collapse show" id="CommentForm" style="">
+        <div class="card card-body">
+                <ul style="color:red">
+                    <li>
+                        @Model.MsgError
+                    </li>
+                </ul>
+            <form asp-controller="Comment" asp-action="Create" method="post">
+                @Html.HiddenFor(model => Model.currTicketReadable.Id)
+                @* Textbox *@
+                <textarea asp-for="@Model.newComment.Msg" rows="4" class="form-control" placeholder="Say something..."></textarea>
+                @* submit btn *@
+                <div class="text-right pt-3">
+                    <button type="submit" class="btn btn-success">Submit</button>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
+}
+else
+{
+    <div class="collapse" id="CommentForm" style="">
+        <div class="card card-body">
+            <form asp-controller="Comment" asp-action="Create" method="post">
+                @Html.HiddenFor(model => Model.currTicketReadable.Id)
+                @* Textbox *@
+                <textarea asp-for="@Model.newComment.Msg" rows="4" class="form-control" placeholder="Say something..."></textarea>
+                @* submit btn *@
+                <div class="text-right pt-3">
+                    <button type="submit" class="btn btn-success">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+}
+
 
 
 @* Comments here *@
@@ -105,7 +134,6 @@ else
     foreach (var item in Model.CommentList)
     {
         <hr />
-        @*<div class="card spur-card "></div>*@
         <div class="card spur-card card-body col-md-8 ">
 
             @* Row one *@
@@ -131,7 +159,12 @@ else
                     </a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
                         <a class="dropdown-item" asp-controller="Comment" asp-action="Edit" asp-route-commentId="@item.Id" asp-route-returnticketId="@Model.currTicketReadable.Id">Edit</a>
-                        <a class="dropdown-item" asp-controller="Comment" asp-action="Delete" asp-route-commentId="@item.Id" asp-route-returnticketId="@Model.currTicketReadable.Id">Delete</a>
+                        <form asp-controller="Comment" asp-action="Delete" method="post" class="dropdown-item">
+                            @Html.HiddenFor(model => item.Id)
+                            @Html.HiddenFor(model => Model.currTicketReadable.Id)
+                            <button type="submit" class="btn  text-dark text-left pl-0" onclick="return confirm('Are you sure?');">Delete</button>
+                        </form>
+                        @*<a class="dropdown-item" asp-controller="Comment" asp-action="Delete" asp-route-commentId="@item.Id" asp-route-returnticketId="@Model.currTicketReadable.Id">Delete</a>*@
                     </div>
                 </div>
             </div>

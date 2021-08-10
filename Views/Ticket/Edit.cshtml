@@ -1,13 +1,38 @@
 ﻿@{
     ViewData["Title"] = "Edit Bug Ticket";
 }
-@model BugTracker.ViewModels.BugTicketEditViewModel
+@model BugTracker.ViewModels.TicketEditViewModel
 
 
 
 <h1 class="dash-title">Edit Bug Ticket</h1>
 <h2>@Model.currTicket.ProjectParentReadable</h2>
-<form asp-controller="BugTicket" asp-action="Edit" method="post">
+
+@if (Model.ErrorExists)
+{
+    <ul style="color:red">
+        @if (Model.TitleErrorMsg != "")
+        {
+            <li>
+                @Model.TitleErrorMsg
+            </li>
+        }
+        @if (Model.BehaviorErrorMsg != "")
+        {
+            <li>
+                @Model.BehaviorErrorMsg
+            </li>
+        }
+        @if (Model.StepsErrorMsg != "")
+        {
+            <li>
+                @Model.StepsErrorMsg
+            </li>
+        }
+    </ul>
+}
+
+<form asp-controller="Ticket" asp-action="Edit" method="post">
     @Html.HiddenFor(model => model.currTicket.Id)
 
 
@@ -47,7 +72,7 @@
 
     @* Buttons *@
     <div class="text-right">
-        <a asp-controller="BugTicket" asp-action="Manage" class="btn btn-sm btn-outline-danger">Cancel</a>
+        <a asp-controller="Ticket" asp-action="Details" asp-route-ticketId="@Model.currTicket.Id" class="btn btn-sm btn-outline-danger">Cancel</a>
 
         <button type="submit" class="btn btn-success">Create</button>
     </div>

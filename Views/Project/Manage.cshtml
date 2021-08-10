@@ -1,6 +1,4 @@
-﻿@{
-    ViewData["Title"] = "Manage Projects";
-}
+﻿@{ ViewData["Title"] = "Manage Projects"; }
 @model BugTracker.ViewModels.ProjectViewModel
 
 
@@ -11,19 +9,23 @@
     @* Create project field *@
     <tr>
         <td colspan="3">
-            @using (var form = Html.BeginForm("Create", "Project", FormMethod.Post))
-            {
+            <form asp-controller="Project" asp-action="Create" method="post">
                 <div class="input-group">
                     @* Textbox *@
-                    <input asp-for="@Model.currProject.Title" class="form-control" placeholder="New project title" />
+                    <input asp-for="@Model.currProject.Title" class="form-control" placeholder="New project title..." />
 
                     @* Create button *@
                     <div class="input-group-append">
                         <button type="submit" class="btn btn-success">Create</button>
                     </div>
                 </div>
-                @Html.ValidationSummary()
-            }
+                @if (Model.errorMsg != "")
+                {
+                    <ul>
+                        <li style="color:red">@Model.errorMsg</li>
+                    </ul>
+                }
+            </form>
         </td>
     </tr>
 

@@ -65,6 +65,16 @@ namespace BugTracker.Areas.Identity.Pages.Account
             public string UserName { get; set; }
 
             [Required]
+            [DataType(DataType.Text)]
+            [Display(Name = "First name")]
+            public string FirstName { get; set; }
+
+            [Required]
+            [DataType(DataType.Text)]
+            [Display(Name = "Last name")]
+            public string LastName { get; set; }
+
+            [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
@@ -91,7 +101,12 @@ namespace BugTracker.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 // Create the model for Identity Account
-                var user = new BugTrackerUser { UserName = Input.UserName, Email = Input.Email };
+                var user = new BugTrackerUser { 
+                    UserName = Input.UserName, 
+                    Email = Input.Email, 
+                    FirstName = Input.FirstName, 
+                    LastName = Input.LastName 
+                };
 
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
@@ -140,10 +155,25 @@ namespace BugTracker.Areas.Identity.Pages.Account
         {
             // Establish connection.
             SqlConnection db = DbHelper.GetConnection();
-            string query = "INSERT INTO BTUsers(UserName, StringId) VALUES( @userName, @stringId );";
+
+            // Generate Id.
+            string getMaxUserIdQuery = "SELECT BTUsers.Id FROM BTUsers ORDER BY BTUsers.Id DESC;";
+            // Make sure there is something in the database. Default is 0.
+            int extractedMax = db.Query<int>(getMaxUserIdQuery).FirstOrDefault();
+            int userId = extractedMax + 1;
+
+            
+            string query = "INSERT INTO BTUsers(Id, UserName, StringId, FirstName, LastName) VALUES( @UserId, @userName, @stringId, @firstName, @lastName );";
 
             // Insert the new BTUser.
-            db.Execute(query, new { userName = Input.UserName, stringId = stringId });
+            db.Execute(query, new { 
+                UserId = userId, 
+                userName = Input.UserName, 
+                stringId = stringId,
+                firstName = Input.FirstName,
+                lastName = Input.LastName
+
+            });
         }
     }
 }

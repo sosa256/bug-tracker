@@ -1,12 +1,37 @@
 ﻿@{
     ViewData["Title"] = "Create Bug Ticket";
 }
-@model BugTracker.ViewModels.BugTicketCreateViewModel
+@model BugTracker.ViewModels.TicketCreateViewModel
 
 
 
 <h1 class="dash-title">Create Bug Ticket</h1>
-<form asp-controller="BugTicket" asp-action="Create" method="post">
+
+@if (Model.ErrorExists)
+{
+    <ul style="color:red">
+        @if (Model.TitleErrorMsg != "")
+        {
+            <li>
+                @Model.TitleErrorMsg
+            </li>
+        }
+        @if (Model.BehaviorErrorMsg != "")
+        {
+            <li>
+                @Model.BehaviorErrorMsg
+            </li>
+        }
+        @if (Model.StepsErrorMsg != "")
+        {
+            <li>
+                @Model.StepsErrorMsg
+            </li>
+        }
+    </ul>
+}
+
+<form asp-controller="Ticket" asp-action="Create" method="post">
 
 
     <div class="form-row">
@@ -51,11 +76,11 @@
 
     @* Buttons *@
     <div class="text-right">
-        <a asp-controller="BugTicket" asp-action="Manage" class="btn btn-sm btn-outline-danger">Cancel</a>
+        <a asp-controller="Ticket" asp-action="Manage" class="btn btn-sm btn-outline-danger">Cancel</a>
 
         <button type="submit" class="btn btn-success">Create</button>
     </div>
-    
+
     @Html.ValidationSummary()
 </form>
 

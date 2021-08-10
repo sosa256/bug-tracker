@@ -55,7 +55,7 @@ namespace BugTracker
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=BugTicket}/{action=Manage}/{id?}");// revert back to home/index
+                    pattern: "{controller=Home}/{action=Index}/{id?}");// revert back to home/index
                 endpoints.MapRazorPages();
             });
         }

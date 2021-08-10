@@ -198,19 +198,45 @@ Comments can now be made below a ticket.
 08/06/2021 3:02 PM
 Comment CRUD operations complete.
 
+08/07/2021 12:48 PM
+RoleConroller code cleaned.
+Started making SqlHelper.
+	To make queries more readable.
+
+08/07/2021 1:22 PM
+RoleConroller has empty string validation for role titles.
+	Couldn't use model validation since it's not my model.
+
+08/07/2021 4:25 PM
+Model Validations only seem to work if you pass just that model.
+I'm using ViewModels so the built in validation is not applicable.
+I'm just going to use control statements.
+
+08/08/2021 1:39 PM
+ProjectController.cs cleaned up
+	added validations for user input
+	except for hidden forms (will rely on [ValidateAntiForgeryToken] )
+
+08/09/2021 2:06 PM
+BugTicketController.cs cleaned up with validations added.
+
+08/09/2021 2:10 PM
+BugTicketController.cs renamed to TicketController.cs
+BugTicketViewModels renamed to TicketViewModels
+
+
+08/09/2021 2:10 PM
+Rest of the controllers are now cleaned up and have server-side verification.
+
 
 
 
 TODO
-[Login stuff]
 use the Authorization to restric actions
 make create role action inaccessible
 make role assignment only for Administrator role
 
 use https://www.datatables.net/ for nice DB tables
-
-in RoleController use the view models correctly by haveing the action have the model as a parameter
-	scratch that use the anchor tag helper to show properties
 
 make a helper with a list of query actions
 

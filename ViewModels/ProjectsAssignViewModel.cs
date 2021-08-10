@@ -1,15 +1,23 @@
 ﻿using BugTracker.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BugTracker.ViewModels
 {
-    // Copy of ProjectDetailsViewModel
+    // Copy of ProjectDetailsViewModel.
+    // freeUsers is a more accurate name than usersAssigned.
     public class ProjectsAssignViewModel
     {
         public Project project;
         public List<BTUser> freeUsers;
+
+
+
+
+        // CONSTRUCTORS
+        public ProjectsAssignViewModel(Project project, List<BTUser> userList)
+        {
+            this.project = project;
+            this.freeUsers = userList;
+        }
     }
 }

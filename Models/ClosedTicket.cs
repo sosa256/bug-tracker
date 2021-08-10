@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BugTracker.Models
 {
@@ -25,5 +22,46 @@ namespace BugTracker.Models
         public DateTime DateClosed{ get; set; }
         [Display(Name = "User Who Closed")]
         public int UserWhoClosed { get; set; }
+
+
+
+
+        // CONSTRUCTORS
+        public ClosedTicket()
+        {
+            ProjectParent = -1;
+            TicketClosed = -1;
+            UnwantedBehaviorCause = "";
+            UnwantedBehaviorSolution = "";
+            IsTemp = true;
+            DateClosed = DateTime.MinValue;
+            UserWhoClosed = -1;
+        }
+
+
+        public ClosedTicket(ClosedTicket closedTicket)
+        {
+            ProjectParent = closedTicket.ProjectParent;
+            TicketClosed = closedTicket.TicketClosed;
+            UnwantedBehaviorCause = closedTicket.UnwantedBehaviorCause;
+            UnwantedBehaviorSolution = closedTicket.UnwantedBehaviorSolution;
+            IsTemp = closedTicket.IsTemp;
+            DateClosed = closedTicket.DateClosed;
+            UserWhoClosed = closedTicket.UserWhoClosed;
+        }
+
+        public ClosedTicket(
+            int projectParent, int ticketId,        string cause, 
+            string solution,   bool isSolutionTemp, DateTime dateClosed,
+            int userIdWhoClosed)
+        {
+            ProjectParent = projectParent;
+            TicketClosed = ticketId;
+            UnwantedBehaviorCause = cause;
+            UnwantedBehaviorSolution = solution;
+            IsTemp = isSolutionTemp;
+            DateClosed = dateClosed;
+            UserWhoClosed = userIdWhoClosed;
+        }
     }
 }

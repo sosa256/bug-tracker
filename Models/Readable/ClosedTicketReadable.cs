@@ -18,14 +18,8 @@ namespace BugTracker.Models
 
         // CONSTRUCTOR
         public ClosedTicketReadable( ClosedTicket closedTicket, string projName, string ticketName, string closedName, string openedName )
+            : base(closedTicket)
         {
-            // Only fill-in what is needed
-
-            // ClosedTicket/Index
-            this.DateClosed = closedTicket.DateClosed;
-            this.TicketClosed = closedTicket.TicketClosed;
-            this.ProjectParent = closedTicket.ProjectParent;
-
             this.ProjectParentReadable = projName;
             this.TicketTitle = ticketName;
             this.UserWhoClosedName = closedName;

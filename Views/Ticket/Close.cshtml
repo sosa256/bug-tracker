@@ -7,7 +7,26 @@
 
 <h1 class="dash-title">Close Bug Ticket</h1>
 <h2>Closing: @Model.ticketToClose.Title</h2>
-<form asp-controller="BugTicket" asp-action="Close" asp-route-ticketId="@Model.ticketToClose.Id" method="post">
+
+@if (Model.ErrorExists)
+{
+    <ul style="color:red">
+        @if (Model.CauseErrorMsg != "")
+        {
+            <li>
+                @Model.CauseErrorMsg
+            </li>
+        }
+        @if (Model.SolutionErrorMsg != "")
+        {
+            <li>
+                @Model.SolutionErrorMsg
+            </li>
+        }
+    </ul>
+}
+
+<form asp-controller="Ticket" asp-action="Close" asp-route-ticketId="@Model.ticketToClose.Id" method="post">
 
     <div class="card spur-card ">
         @* Header *@
@@ -64,7 +83,7 @@
 
     @* Buttons *@
     <div class="text-right">
-        <a asp-controller="BugTicket" asp-action="Details" asp-route-ticketId="@Model.ticketToClose.Id" class="btn btn-sm btn-outline-danger">Cancel</a>
+        <a asp-controller="Ticket" asp-action="Details" asp-route-ticketId="@Model.ticketToClose.Id" class="btn btn-sm btn-outline-danger">Cancel</a>
 
         <button type="submit" class="btn btn-outline-warning">Close</button>
     </div>

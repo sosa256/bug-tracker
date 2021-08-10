@@ -5,6 +5,14 @@
 
 
 <h1 class="dash-title">Edit Comment</h1>
+
+@if(Model.ErrorExists)
+{ 
+    <ul style="color:red">
+        <li>The comment must contain between 3 and 255 characters</li>
+    </ul>
+}
+
 <form asp-controller="Comment" asp-action="Edit" asp-route-returnticketId="@Model.ReturnTicketId" asp-route-commentId="@Model.currComment.Id" method="post">
     <div class="input-group">
         
@@ -19,3 +27,4 @@
 </form>
 
 @* Cancel button *@
+<a asp-controller="Ticket" asp-action="Details" asp-route-ticketId="@Model.ReturnTicketId" class="btn btn-sm btn-outline-danger">Cancel</a>
