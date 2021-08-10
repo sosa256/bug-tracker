@@ -9,12 +9,9 @@
 
 
         // CONSTRUCTOR
-        public ProjectReadable( Project proj , string ownerName)
+        public ProjectReadable( Project proj , string ownerName) 
+            : base( proj.Id, proj.Title, proj.Owner )
         {
-            this.Id = proj.Id;
-            this.Title = proj.Title;
-            this.Owner = proj.Owner;
-
             this.OwnerReadable = ownerName;
         }
     }

@@ -1,7 +1,8 @@
-﻿@{
-    ViewData["Title"] = "Project Assignment";
-}
+﻿@{ ViewData["Title"] = "Project Assignment"; }
 @model BugTracker.ViewModels.ProjectsAssignViewModel
+
+
+
 
 <h1>@Model.project.Title</h1>
 <h2 class="pt-2">Free Users</h2>
@@ -33,18 +34,9 @@
                     {
                         @Html.HiddenFor(model => item.Id)
                         @Html.HiddenFor(model => Model.project.Id)
-                        <div class="input-group-append">
-                            <button type="submit" class="btn btn-success" onclick="return confirm('Are you sure?');">Assign</button>
-                        </div>
+                        <button type="submit" class="btn btn-success" onclick="return confirm('Are you sure?');">Assign</button>
                     }
-                    @*<a href="/Project/Unassign/@item.Id" onclick="return confirm('Are you sure?');" class="btn btn-sm btn-danger">Remove</a>*@
                 </td>
-
-                @*<td class="text-center">
-                        <a href="/Project/Update/@item.Id" class="btn btn-sm btn-primary">Rename</a>
-
-                        <a href="/Project/Delete/@item.Id" onclick="return confirm('Are you sure?');" class="btn btn-sm btn-danger">Delete</a>
-                    </td>*@
             </tr>
         }
     }

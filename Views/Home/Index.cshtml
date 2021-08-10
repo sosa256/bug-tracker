@@ -1,9 +1,15 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Identity
+@using BugTracker.Areas.Identity.Data
+
+@inject UserManager<BugTrackerUser> UserManager
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
+
 @* Title header *@
 <div class="text-center">
-    <h1 class="display-4">Welcome Home :^)</h1>
+    <h1 class="display-4">Welcome Home @UserManager.GetUserName(User) :^)</h1>
 </div>
 

@@ -9,9 +9,11 @@
 <h1 class="dash-title">Details</h1>
 
 @* Buttons *@
-<div class=" pb-3">
-    <a asp-controller="ClosedTicket" asp-action="Index" class="btn btn-sm btn-outline-primary">Back</a>
-    <a asp-controller="ClosedTicket" asp-action="Delete" asp-route-ticketId="@Model.closedTicketReadable.TicketClosed" asp-route-projectId="@Model.closedTicketReadable.ProjectParent" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure? This will delete the original Ticket as well.');">Delete</a>
+<div class="input-group pb-3">
+    <a asp-controller="ClosedTicket" asp-action="Index" class="btn btn-sm btn-outline-primary input-group-append">Back</a>
+    <form asp-controller="ClosedTicket" asp-action="Delete" asp-route-ticketId="@Model.closedTicketReadable.TicketClosed" asp-route-projectId="@Model.closedTicketReadable.ProjectParent" method="post" class="pl-2 pr-2">
+        <button class="btn btn-sm btn-outline-danger input-group-append" onclick="return confirm('Are you sure? This will delete the original Ticket as well.');">Delete</button>
+    </form>
 </div>
 
 @* General info card *@
@@ -76,7 +78,7 @@
 
     @* Body *@
     <div class="card-body ">
-        @Model.UnwantedBehaviorCause
+        @Model.closedTicketReadable.UnwantedBehaviorCause
     </div>
 </div>
 

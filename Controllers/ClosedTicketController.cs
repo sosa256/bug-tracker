@@ -1,20 +1,15 @@
 ﻿using BugTracker.Helpers;
 using BugTracker.Models;
 using BugTracker.ViewModels;
-using Dapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BugTracker.Controllers
 {
     public class ClosedTicketController : Controller
     {
         // PROPERTIES
-        private SqlConnection _db;
+        private readonly SqlHelper _sqlHelper;
 
 
 
@@ -22,7 +17,7 @@ namespace BugTracker.Controllers
         // CONSTRUCTORS
         public ClosedTicketController()
         {
-            _db = DbHelper.GetConnection();
+            _sqlHelper = new SqlHelper();
         }
 
 
@@ -35,69 +30,59 @@ namespace BugTracker.Controllers
         public IActionResult Index()
         {
             // Get List of closed Tickets.
-            string getClosedTicketsQuery = "SELECT * FROM ClosedTickets;";
-            List<ClosedTicket> closedTicketList = _db.Query<ClosedTicket>(getClosedTicketsQuery).ToList();
+            List<ClosedTicket> closedTicketList = _sqlHelper.SelectAllClosedTickets();
+            List<ClosedTicketReadable> closedTicketRList = ClosedTicketListToReadableList(closedTicketList);
 
-            ClosedTicketViewModel model = new ClosedTicketViewModel()
-            {
-                // Make list readable.
-                closedTicketList = ClosedTicketListToReadableList(closedTicketList)
-            };
+            ClosedTicketViewModel model = new ClosedTicketViewModel(closedTicketRList);
 
             return View(model);
         }
+
 
         // GET: ClosedTicket/Details
         [HttpGet]
         public IActionResult Details(int ticketId, int projectId)
         {
-            string getClosedTicketQuery = "SELECT * FROM ClosedTickets WHERE ClosedTickets.ProjectParent = @projId AND ClosedTickets.TicketClosed = @queryticketId ;";
-            string getUnwantedBehaviorQuery = "SELECT Tickets.UnwantedBehavior FROM Tickets WHERE Tickets.Id = @queryticketId ;";
-            string getCauseQuery = "SELECT ClosedTickets.UnwantedBehaviorCause FROM ClosedTickets WHERE ClosedTickets.ProjectParent = @projId AND ClosedTickets.TicketClosed = @queryticketId ;";
-            string getSolutionQuery = "SELECT ClosedTickets.UnwantedBehaviorSolution FROM ClosedTickets WHERE ClosedTickets.ProjectParent = @projId AND ClosedTickets.TicketClosed = @queryticketId ;";
-
-            // I know I could use just the first one.
-            // Copied them over so that names make sense. 
-            var getClosedTicketParameters = new { projId = projectId, queryticketId = ticketId };
-            var getUnwantedBehaviorParameters = new { queryticketId = ticketId };
-            var getCauseParameters = getClosedTicketParameters;
-            var getSolutionParameters = getClosedTicketParameters;
-
-            ClosedTicket currClosedTicket = _db.Query<ClosedTicket>(getClosedTicketQuery, getClosedTicketParameters).First();
-
-            string unwantedBehavior = _db.Query<string>(getUnwantedBehaviorQuery, getUnwantedBehaviorParameters).First();
-            string unwantedBehaviorCause = _db.Query<string>(getCauseQuery, getCauseParameters).First();
-            string unwantedBehaviorSolution = _db.Query<string>(getSolutionQuery, getSolutionParameters).First();
-
-            ClosedTicketDetailsViewModel model = new ClosedTicketDetailsViewModel()
+            // Validate input.
+            Ticket ticketThatWasClosed = _sqlHelper.SelectTicket(ticketId);
+            if (ticketThatWasClosed == null)
             {
-                closedTicketReadable = ClosedTicketToReadable(currClosedTicket),
-                UnwantedBehavior = unwantedBehavior,
-                UnwantedBehaviorCause = unwantedBehaviorCause,
-                UnwantedBehaviorSolution = unwantedBehaviorSolution
-            };
+                return Content("Whoops the ticket doesn't exist");
+            }
+            int mostCurrTicketId = _sqlHelper.SelectMostCurrentTicketInHistory(ticketId);
+            if (ticketId != mostCurrTicketId)
+            {
+                // TODO: Error pages.
+                return Content("Whoops that ticket is outdated and cannot be viewed! Please use history to view old tickets.");
+            }
+            Project project = _sqlHelper.SelectProject(projectId);
+            if (project == null)
+            {
+                return Content("Whoops the project doesn't exist");
+            }
+            // The TicketId and ProjectId must be valid here.
+
+            ClosedTicketReadable currClosedTicketR = ClosedTicketToReadable(_sqlHelper.SelectClosedTicket(projectId, ticketId));
+            
+            ClosedTicketDetailsViewModel model = new ClosedTicketDetailsViewModel(currClosedTicketR, ticketThatWasClosed);
 
             return View(model);
         }
 
+
+        // POST: ClosedTicket/Delete
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Delete(int ticketId, int projectId)
         {
             // Delete Closed Ticket.
-            string deleteClosedTicketQuery = "DELETE FROM ClosedTickets WHERE ClosedTickets.ProjectParent = @projId AND ClosedTickets.TicketClosed = @queryTicketId ;";
-            var closedDeleteParameters = new { queryTicketId = ticketId, projId = projectId };
-            _db.Execute(deleteClosedTicketQuery, closedDeleteParameters);
+            _sqlHelper.DeleteClosedTicket(projectId, ticketId);
 
             // Also delete original Ticket.
-            string deleteTicketQuery = "DELETE FROM Tickets WHERE Tickets.Id = @queryTicketId ;";
-            var ticketDeleteParameters = new { queryTicketId = ticketId };
-            _db.Execute(deleteTicketQuery, ticketDeleteParameters);
+            _sqlHelper.DeleteTicket(ticketId);
 
             return RedirectToAction("Index");
         }
-
-
-
-
 
 
         public List<ClosedTicketReadable> ClosedTicketListToReadableList(List<ClosedTicket> closedTicketList)
@@ -121,21 +106,17 @@ namespace BugTracker.Controllers
 
         public ClosedTicketReadable ClosedTicketToReadable(ClosedTicket closedTicket)
         {
-            string getProjectTitleQuery = "SELECT Projects.Title FROM Projects WHERE Projects.Id IN ( SELECT Tickets.ProjectParent FROM Tickets WHERE Tickets.Id = @ticketId );";
-            string getTicketTitleQuery = "SELECT Tickets.Title FROM Tickets WHERE Tickets.Id = @ticketId;";
-            string getUserWhoClosedNameQuery = "SELECT CONCAT([BTUsers].[FirstName], ' ',  [BTUsers].LastName) AS FullName FROM [BTUsers] WHERE [BTUsers].[Id] IN ( 	SELECT ClosedTickets.UserWhoClosed 	FROM ClosedTickets 	WHERE ClosedTickets.ProjectParent = @projId AND ClosedTickets.TicketClosed = @ticketId );";
-            string getTicketOpenedByName = "SELECT CONCAT(BTUsers.FirstName,  ' ' + BTUsers.LastName) AS FullName FROM BTUsers WHERE BTUsers.Id IN ( SELECT Tickets.OpenedBy FROM Tickets WHERE Tickets.Id = @ticketId );";
-
-            var parameter = new { ticketId = closedTicket.TicketClosed };
-            var userWhoClosedParameter = new { projId = closedTicket.ProjectParent, ticketId = closedTicket.TicketClosed };
-
-            string projName = _db.Query<string>(getProjectTitleQuery, parameter).First();
-            string ticketName = _db.Query<string>(getTicketTitleQuery, parameter).First();
-            string closedName = _db.Query<string>(getUserWhoClosedNameQuery, userWhoClosedParameter).First(); ;
-            string openedName = _db.Query<string>(getTicketOpenedByName, parameter).First();
+            // Get the properties for a Readable Closed Ticket.
+            Ticket ticketThatWasClosed = _sqlHelper.SelectTicket(closedTicket.TicketClosed);
+            Project projectThatHeldTheTicket = _sqlHelper.SelectProject(ticketThatWasClosed.ProjectParent);
+            string projectTitle = projectThatHeldTheTicket.Title;
+            
+            string ticketTitle = ticketThatWasClosed.Title;
+            string closedName = _sqlHelper.GetUserFullName(closedTicket.UserWhoClosed);
+            string openedName = _sqlHelper.GetUserFullName(ticketThatWasClosed.OpenedBy);
 
             // Create readable.
-            ClosedTicketReadable ret = new ClosedTicketReadable(closedTicket, projName, ticketName, closedName, openedName);
+            ClosedTicketReadable ret = new ClosedTicketReadable(closedTicket, projectTitle, ticketTitle, closedName, openedName);
 
             return ret;
         }

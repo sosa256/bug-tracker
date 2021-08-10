@@ -1,13 +1,20 @@
 ﻿using BugTracker.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BugTracker.ViewModels
 {
     public class ClosedTicketViewModel
     {
+        // PROPERTIES
         public List<ClosedTicketReadable> closedTicketList { get; set; }
+
+
+
+
+        // CONSTRUCTORS
+        public ClosedTicketViewModel(List<ClosedTicketReadable> ticketList)
+        {
+            this.closedTicketList = ticketList;
+        }
     }
 }

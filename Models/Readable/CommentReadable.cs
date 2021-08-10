@@ -10,14 +10,8 @@ namespace BugTracker.Models.Readable
 
 
         // CONSTRUCTORS
-        public CommentReadable( Comment comment, string ownerName )
+        public CommentReadable( Comment comment, string ownerName ) : base(comment)
         {
-            this.Id = comment.Id;
-            this.Owner = comment.Owner;
-            this.TicketId = comment.TicketId;
-            this.Msg = comment.Msg;
-            this.DateCreated = comment.DateCreated;
-            
             this.OwnerReadable = ownerName;
         }
 

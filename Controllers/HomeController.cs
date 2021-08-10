@@ -6,7 +6,7 @@ using System.Diagnostics;
 
 namespace BugTracker.Controllers
 {
-    //[Authorize]
+    [Authorize]
     public class HomeController : Controller
     {
         // PROPERTIES

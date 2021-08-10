@@ -1,19 +1,17 @@
-﻿@{
-    ViewData["Title"] = "Role Assignment";
-}
-@model BugTracker.ViewModels.RoleAssignmentViewModel
+﻿@{ ViewData["Title"] = "Role Assignment"; }
+@model List<BTUser>
 
 <h1>Role Assignment</h1>
-<table class="table table-striped table-bordered table-hover" >
+<table class="table table-striped table-bordered table-hover">
     @* User list *@
-    @if (Model.userList.Count != 0)
+    @if (Model.Count != 0)
     {
         <tr class="text-center">
             <td>Full Name</td>
             <td>User Name</td>
             <td>Role</td>
         </tr>
-        @foreach (var item in Model.userList)
+        @foreach (BTUser item in Model)
         {
             <tr>
                 @* Full name *@
@@ -26,17 +24,17 @@
                     @item.UserName
                 </td>
 
-                @* Role *@
+                @* Role (Select) *@
                 <td>
-                    @using (var form = Html.BeginForm("RoleUpdate", "Role", FormMethod.Post))
-                    {
+                    <form asp-controller="Role" asp-action="UserRoleUpdate" method="post">
                         @Html.HiddenFor(model => item.Id)
                         @Html.HiddenFor(model => item.StringId)
                         <div class="input-group">
-                            <select asp-items="@(Html.GetEnumSelectList<BugTracker.Models.BTUserRoles>())" asp-for="@item.Role" class="form-control " ></select>
+                            <select asp-items="@(Html.GetEnumSelectList<BugTracker.Models.BTUserRoles>())" asp-for="@item.Role" class="form-control "></select>
+                            @* Update btn *@
                             <button type="submit" class="btn btn-outline-primary input-group-append">Update</button>
                         </div>
-                    }
+                    </form>
                 </td>
             </tr>
         }
