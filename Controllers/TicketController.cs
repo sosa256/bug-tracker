@@ -4,6 +4,7 @@ using BugTracker.Models;
 using BugTracker.Models.Readable;
 using BugTracker.ViewModels;
 using Dapper.Contrib.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +14,7 @@ using System.Collections.Generic;
 
 namespace BugTracker.Controllers
 {
+    [Authorize(Roles = "Administrator, Developer, Submitter")]
     public class TicketController : Controller
     {
         // PROPERTIES
@@ -129,6 +131,7 @@ namespace BugTracker.Controllers
             List<CommentReadable> commentList = commentController.CommentListToReadable (_sqlHelper.SelectCommentsFromTicket(ticketId));
 
             TicketDetailsViewModel model = new TicketDetailsViewModel(currTicketReadable, projectParent, commentList);
+            model.UserViewingId = _sqlHelper.SelectUserFromStringId(_userManager.GetUserId(User)).Id;
 
             return View(model);
         } // Details(int)
@@ -167,6 +170,7 @@ namespace BugTracker.Controllers
             TicketDetailsViewModel model = new TicketDetailsViewModel(currTicketReadable, projectParent, commentList);
             model.ErrorExists = true;
             model.newComment.Msg = erroneousMsg;
+            model.UserViewingId = _sqlHelper.SelectUserFromStringId(_userManager.GetUserId(User)).Id;
 
             return View("Details", model);
         }
@@ -179,6 +183,7 @@ namespace BugTracker.Controllers
 
         // GET: Ticket/Close/5
         [HttpGet]
+        [Authorize(Roles = "Administrator, Developer")]
         public ActionResult Close(int ticketId)
         {
             // Verify the Ticket is valid.
@@ -206,6 +211,7 @@ namespace BugTracker.Controllers
 
         // POST: Ticket/Close/5
         [HttpPost]
+        [Authorize(Roles = "Administrator, Developer")]
         [ValidateAntiForgeryToken]
         public ActionResult Close(int ticketId, IFormCollection collection)
         {
@@ -465,9 +471,21 @@ namespace BugTracker.Controllers
         // TODO: Make this avalible only to original owner and Admin
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int ticketId)
+        public IActionResult Delete(IFormCollection collection)
         {
+            // Authorize or deny action. 
+            // Can only delete if you are the Admin or the og owner.
+            int userViewingId = Int32.Parse(collection["UserViewingId"]);
+            BTUser user = _sqlHelper.SelectUserFromStringId(_userManager.GetUserId(User));
+            bool authorizedAction = (user.Role == (int)BTUserRoles.Administrator) || (user.Id == userViewingId);
+            if ( ! authorizedAction)
+            {
+                return Content("This is an unauthorized action");
+            }
+
             // ValidateAntiForgeryToken makes sure ticketId was not tampered with.
+            int ticketId = Int32.Parse(collection["currTicketReadable.Id"]);
+
             // Delete Ticket.
             _sqlHelper.DeleteTicket(ticketId);
 

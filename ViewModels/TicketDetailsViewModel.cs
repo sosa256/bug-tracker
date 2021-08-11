@@ -9,13 +9,15 @@ namespace BugTracker.ViewModels
         // PROPERTIES
         public TicketReadable currTicketReadable;
         public Project parentProject;
+
+
         // List of comments for the currentTicket.
         public List<CommentReadable> CommentList { get; set; }
         public Comment newComment { get; set; }
         public string MsgError = "The comment must contain between 3 and 255 characters";
         public bool ErrorExists = false;
 
-
+        public int UserViewingId { get; set; }
 
         // CONSTRUCTORS
         public TicketDetailsViewModel(TicketReadable currTicket, Project parentProject, List<CommentReadable> commentList)

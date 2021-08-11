@@ -3,6 +3,7 @@ using BugTracker.Helpers;
 using BugTracker.Models;
 using BugTracker.Models.Readable;
 using BugTracker.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +12,7 @@ using System.Collections.Generic;
 
 namespace BugTracker.Controllers
 {
+    [Authorize(Roles = "Administrator, Developer, Submitter")]
     public class CommentController : Controller
     {
         // PROPERTIES
@@ -36,6 +38,7 @@ namespace BugTracker.Controllers
         [HttpGet]
         public IActionResult Edit(int commentId, int returnTicketId)
         {
+
             Comment comment = _sqlHelper.SelectComment(commentId);
             // Verify comment and returnTicket
             if (comment == null)
@@ -57,6 +60,7 @@ namespace BugTracker.Controllers
             // Comment and returnTicket must be valid here.
 
             CommentEditViewModel model = new CommentEditViewModel(comment, returnTicketId);
+            model.UserViewingId = _sqlHelper.SelectUserFromStringId(_userManager.GetUserId(User)).Id;
 
             return View(model);
         }
@@ -147,6 +151,16 @@ namespace BugTracker.Controllers
         [HttpPost]
         public IActionResult Edit(int returnTicketId, int commentId, IFormCollection collection)
         {
+            // Authorize or deny action. 
+            // Can only edit if you are the og owner.
+            int userViewingId = Int32.Parse(collection["UserViewingId"]);
+            BTUser user = _sqlHelper.SelectUserFromStringId(_userManager.GetUserId(User));
+            bool authorizedAction = (user.Id == userViewingId);
+            if (!authorizedAction)
+            {
+                return Content("This is an unauthorized action");
+            }
+
             string newMsg = collection["currComment.Msg"].ToString();
 
             // Validate the msg.
@@ -159,6 +173,7 @@ namespace BugTracker.Controllers
                 CommentEditViewModel model = new CommentEditViewModel(currComment, returnTicketId);
                 model.ErrorExists = true;
                 model.currComment.Msg = newMsg;
+                model.UserViewingId = _sqlHelper.SelectUserFromStringId(_userManager.GetUserId(User)).Id;
 
                 return View("Edit", model);
             }
@@ -178,6 +193,16 @@ namespace BugTracker.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Delete(IFormCollection collection)
         {
+            // Authorize or deny action. 
+            // Can only delete if you are the Admin or the og owner.
+            int userViewingId = Int32.Parse(collection["UserViewingId"]);
+            BTUser user = _sqlHelper.SelectUserFromStringId(_userManager.GetUserId(User));
+            bool authorizedAction = (user.Role == (int)BTUserRoles.Administrator) || (user.Id == userViewingId);
+            if (!authorizedAction)
+            {
+                return Content("This is an unauthorized action");
+            }
+
             // Extract form data.
             int commentId = Int32.Parse(collection["item.Id"]);
             int returnTicketId = Int32.Parse(collection["currTicketReadable.Id"]);

@@ -1,11 +1,13 @@
 ﻿using BugTracker.Helpers;
 using BugTracker.Models;
 using BugTracker.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 
 namespace BugTracker.Controllers
 {
+    [Authorize(Roles = "Administrator, Developer")]
     public class ClosedTicketController : Controller
     {
         // PROPERTIES
@@ -27,6 +29,7 @@ namespace BugTracker.Controllers
 
         // GET: ClosedTicket/Index
         [HttpGet]
+        [Authorize(Roles = "Administrator, Developer, Submitter")]
         public IActionResult Index()
         {
             // Get List of closed Tickets.
@@ -41,6 +44,7 @@ namespace BugTracker.Controllers
 
         // GET: ClosedTicket/Details
         [HttpGet]
+        [Authorize(Roles = "Administrator, Developer, Submitter")]
         public IActionResult Details(int ticketId, int projectId)
         {
             // Validate input.

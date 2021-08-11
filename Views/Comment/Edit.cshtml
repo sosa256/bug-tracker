@@ -15,9 +15,10 @@
 
 <form asp-controller="Comment" asp-action="Edit" asp-route-returnticketId="@Model.ReturnTicketId" asp-route-commentId="@Model.currComment.Id" method="post">
     <div class="input-group">
-        
+        @Html.HiddenFor(model => Model.UserViewingId)
+
         @* Textbox *@
-        <input asp-for="@Model.currComment.Msg" class="form-control"/>
+        <input asp-for="@Model.currComment.Msg" class="form-control" />
 
         @* Update button *@
         <div class="input-group-append">

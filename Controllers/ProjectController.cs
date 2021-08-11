@@ -2,6 +2,7 @@
 using BugTracker.Helpers;
 using BugTracker.Models;
 using BugTracker.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,7 @@ using System.Collections.Generic;
 
 namespace BugTracker.Controllers
 {
+    [Authorize(Roles = "Administrator")]
     public class ProjectController : Controller
     {
         // PROPERTIES
