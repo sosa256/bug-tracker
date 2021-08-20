@@ -28,32 +28,28 @@
                 @* Logo top left *@
                 <a asp-controller="Home" asp-action="Index" class="spur-logo">
                     <i class="fas fa-bug"></i>
-                    @* adding another character makes dash-nav-list out of place *@
                     Bug Tracker
                 </a>
             </header>
 
             @* The navigation list *@
-            <nav class="dash-nav-list">
-                <a asp-controller="Home" asp-action="Index" class="dash-nav-item">
-                    <i class="fas fa-home"></i>
-                    Home
-                </a>
+        <nav class="dash-nav-list">
+            <a asp-controller="Home" asp-action="Index" class="dash-nav-item">
+                <i class="fas fa-home"></i>
+                Home
+            </a>
 
-                @if (User.IsInRole("Administrator"))
-                {
-                    <div class="dash-nav-dropdown">
-                        <a href="#!" class="dash-nav-item dash-nav-dropdown-toggle">
-                            <i class="fas fa-users-cog"></i>
-                            Roles
-                        </a>
-                        <div class="dash-nav-dropdown-menu">
-                            <a asp-controller="Role" asp-action="Manage" class="dash-nav-dropdown-item">Manage</a>
-                            <a asp-controller="Role" asp-action="Assignment" class="dash-nav-dropdown-item">Assignment</a>
-                        </div>
+            @if (User.IsInRole("Administrator") || User.IsInRole("DemoAdministrator"))
+            {
+                <div class="dash-nav-dropdown">
+                    <a href="#!" class="dash-nav-item dash-nav-dropdown-toggle">
+                        <i class="fas fa-users-cog"></i>
+                        Roles
+                    </a>
+                    <div class="dash-nav-dropdown-menu">
+                        <a asp-controller="Role" asp-action="Assignment" class="dash-nav-dropdown-item">Assignment</a>
                     </div>
-                }
-
+                </div>
 
                 <div class="dash-nav-dropdown">
                     <a href="#!" class="dash-nav-item dash-nav-dropdown-toggle">
@@ -62,9 +58,14 @@
                     </a>
                     <div class="dash-nav-dropdown-menu">
                         <a asp-controller="Project" asp-action="Manage" class="dash-nav-dropdown-item">Manage</a>
-                        @*<a asp-controller="Project" asp-action="Assignment" class="dash-nav-dropdown-item">Assignment</a>*@
                     </div>
                 </div>
+            }
+
+
+            @if (User.IsInRole("Administrator") || User.IsInRole("Developer") || User.IsInRole("Submitter")
+              || User.IsInRole("DemoAdministrator") || User.IsInRole("DemoDeveloper") || User.IsInRole("DemoSubmitter"))
+            {
                 <div class="dash-nav-dropdown">
                     <a href="#!" class="dash-nav-item dash-nav-dropdown-toggle">
                         <i class="fas fa-bug"></i>
@@ -75,16 +76,19 @@
                         <a asp-controller="ClosedTicket" asp-action="Index" class="dash-nav-dropdown-item">Closed Tickets</a>
                     </div>
                 </div>
-                <div class="dash-nav-dropdown">
-                    <a href="#!" class="dash-nav-item dash-nav-dropdown-toggle">
-                        <i class="fas fa-info"></i> About
-                    </a>
-                    <div class="dash-nav-dropdown-menu">
-                        <a asp-controller="Home" asp-action="Privacy" class="dash-nav-dropdown-item">Privacy</a>
-                        <a href="https://hackerthemes.com/bootstrap-templates/spur/" target="_blank" class="dash-nav-dropdown-item">Spur Template</a>
-                    </div>
+            }
+
+
+            <div class="dash-nav-dropdown">
+                <a href="#!" class="dash-nav-item dash-nav-dropdown-toggle">
+                    <i class="fas fa-info"></i> About
+                </a>
+                <div class="dash-nav-dropdown-menu">
+                    <a asp-controller="Home" asp-action="Privacy" class="dash-nav-dropdown-item">Privacy</a>
+                    <a href="https://hackerthemes.com/bootstrap-templates/spur/" target="_blank" class="dash-nav-dropdown-item">Spur Template</a>
                 </div>
-            </nav>
+            </div>
+        </nav>
         </div>
         <div class="dash-app">
             <header class="dash-toolbar">
@@ -92,20 +96,12 @@
                     <i class="fas fa-bars"></i>
                 </a>
                 <div class="tools">
-                    @*
-                        Notifications
-                        <a href="#!" class="tools-item">
-                            <i class="fas fa-bell"></i>
-                            <i class="tools-item-count">+9</i>
-                        </a>*@
                     <div class="dropdown tools-item">
-                        @* Account dropdown menue*@
+                        @* Account dropdown menu *@
                         <a href="#" class="" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="fas fa-user"></i>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
-                            @*<a class="dropdown-item" href="#!">Profile</a>
-                                <a class="dropdown-item" href="login.html">LogoutPIzza</a>*@
                             <form id="logoutForm" class="dropdown-item" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
                                 <button id="logout" type="submit" class="nav-link btn btn-link text-dark">Logout</button>
                             </form>

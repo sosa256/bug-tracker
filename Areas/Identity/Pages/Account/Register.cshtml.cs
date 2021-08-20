@@ -17,6 +17,7 @@ using Microsoft.Extensions.Logging;
 using BugTracker.Helpers;
 using Dapper;
 using Microsoft.Data.SqlClient;
+using BugTracker.Models;
 
 namespace BugTracker.Areas.Identity.Pages.Account
 {
@@ -28,6 +29,8 @@ namespace BugTracker.Areas.Identity.Pages.Account
         private readonly UserManager<BugTrackerUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+
+
 
 
         // CONSTRUCTORS
@@ -153,27 +156,12 @@ namespace BugTracker.Areas.Identity.Pages.Account
 
         private void InsertNewBTUser(string stringId)
         {
-            // Establish connection.
-            SqlConnection db = DbHelper.GetConnection();
+            SqlHelper _sqlHelper = new SqlHelper(DbHelper.GetConnection());
 
-            // Generate Id.
-            string getMaxUserIdQuery = "SELECT BTUsers.Id FROM BTUsers ORDER BY BTUsers.Id DESC;";
-            // Make sure there is something in the database. Default is 0.
-            int extractedMax = db.Query<int>(getMaxUserIdQuery).FirstOrDefault();
-            int userId = extractedMax + 1;
-
+            int userId = _sqlHelper.GenerateUserId();
+            BTUser userToInsert = new BTUser(userId, stringId, Input.UserName, Input.FirstName, Input.LastName, 0);
+            _sqlHelper.InsertUser(userToInsert);
             
-            string query = "INSERT INTO BTUsers(Id, UserName, StringId, FirstName, LastName) VALUES( @UserId, @userName, @stringId, @firstName, @lastName );";
-
-            // Insert the new BTUser.
-            db.Execute(query, new { 
-                UserId = userId, 
-                userName = Input.UserName, 
-                stringId = stringId,
-                firstName = Input.FirstName,
-                lastName = Input.LastName
-
-            });
         }
     }
 }

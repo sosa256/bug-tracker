@@ -11,11 +11,14 @@
 
 @* Buttons *@
 <div class="input-group pb-3">
+    @* Edit (owner only)*@
     @if (Model.currTicketReadable.OpenedBy == Model.UserViewingId)
     {
         <a asp-controller="Ticket" asp-action="Edit" asp-route-ticketId="@Model.currTicketReadable.Id" class="btn btn-sm btn-outline-success input-group-append ">Edit</a>
     }
-    @if (Model.currTicketReadable.OpenedBy == Model.UserViewingId || User.IsInRole("Administrator"))
+
+    @* Delete (owner/admin only) *@
+    @if (Model.currTicketReadable.OpenedBy == Model.UserViewingId || User.IsInRole("Administrator") || User.IsInRole("DemoAdministrator"))
     {
         <form asp-controller="Ticket" asp-action="Delete" method="post" class="pl-2 pr-2">
             @Html.HiddenFor(model => Model.currTicketReadable.Id)
@@ -24,6 +27,7 @@
         </form>
     }
 
+    @* History *@
     <a asp-controller="Ticket" asp-action="History" asp-route-historyId="@Model.currTicketReadable.HistoryId" class="btn btn-sm btn-outline-primary input-group-append">History</a>
 </div>
 
@@ -74,7 +78,9 @@
 
         @* Buttons *@
         <div class="text-right">
-            @if (User.IsInRole("Administrator") || User.IsInRole("Developer"))
+            
+            @if (User.IsInRole("Administrator") || User.IsInRole("Developer") 
+                || User.IsInRole("DemoAdministrator") || User.IsInRole("DemoDeveloper"))
             {
                 <a asp-controller="Ticket" asp-action="Close" asp-route-ticketId="@Model.currTicketReadable.Id" class="btn btn-sm btn-outline-warning">Close</a>
             }
@@ -160,8 +166,8 @@ else
             </div>
 
             @* menu *@
-            @* Only show if they are the owner *@
-            @if (Model.currTicketReadable.OpenedBy == Model.UserViewingId || User.IsInRole("Administrator"))
+            @* Only show if they are the owner or admin*@
+            @if (Model.currTicketReadable.OpenedBy == Model.UserViewingId || User.IsInRole("Administrator") || User.IsInRole("DemoAdministrator"))
             {
                 <div class="text-right">
                     <div class="dropdown show">

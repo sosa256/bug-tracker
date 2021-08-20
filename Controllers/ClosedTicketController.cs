@@ -2,12 +2,13 @@
 using BugTracker.Models;
 using BugTracker.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 
 namespace BugTracker.Controllers
 {
-    [Authorize(Roles = "Administrator, Developer")]
+    [Authorize(Roles = "Administrator, Developer, Submitter, DemoAdministrator, DemoDeveloper, DemoSubmitter")]
     public class ClosedTicketController : Controller
     {
         // PROPERTIES
@@ -17,9 +18,22 @@ namespace BugTracker.Controllers
 
 
         // CONSTRUCTORS
-        public ClosedTicketController()
+        public ClosedTicketController(IHttpContextAccessor httpContextAccessor)
         {
-            _sqlHelper = new SqlHelper();
+            var user = httpContextAccessor.HttpContext.User;
+            bool isDemoAccount = user.IsInRole("DemoAdministrator")
+                || user.IsInRole("DemoDeveloper")
+                || user.IsInRole("DemoSubmitter");
+            if (isDemoAccount)
+            {
+                // Use demo database connection.
+                _sqlHelper = new SqlHelper(DbHelper.GetDemoConnection());
+            }
+            else
+            {
+                // Use actual database connection.
+                _sqlHelper = new SqlHelper();
+            }
         }
 
 
@@ -29,7 +43,6 @@ namespace BugTracker.Controllers
 
         // GET: ClosedTicket/Index
         [HttpGet]
-        [Authorize(Roles = "Administrator, Developer, Submitter")]
         public IActionResult Index()
         {
             // Get List of closed Tickets.
@@ -44,7 +57,6 @@ namespace BugTracker.Controllers
 
         // GET: ClosedTicket/Details
         [HttpGet]
-        [Authorize(Roles = "Administrator, Developer, Submitter")]
         public IActionResult Details(int ticketId, int projectId)
         {
             // Validate input.
@@ -76,14 +88,21 @@ namespace BugTracker.Controllers
 
         // POST: ClosedTicket/Delete
         [HttpPost]
+        [Authorize(Roles = "Administrator, Developer, DemoAdministrator, DemoDeveloper")]
         [ValidateAntiForgeryToken]
         public IActionResult Delete(int ticketId, int projectId)
         {
             // Delete Closed Ticket.
             _sqlHelper.DeleteClosedTicket(projectId, ticketId);
 
-            // Also delete original Ticket.
-            _sqlHelper.DeleteTicket(ticketId);
+            // Also delete all Tickets in history.
+            Ticket ticketToBeDeleted = _sqlHelper.SelectTicket(ticketId);
+            List<Ticket> listToBeDeleted = _sqlHelper.SelectTicketHistory(ticketToBeDeleted.HistoryId);
+            foreach(Ticket item in listToBeDeleted)
+            {
+                _sqlHelper.DeleteTicket(item.Id);
+            }
+            
 
             return RedirectToAction("Index");
         }

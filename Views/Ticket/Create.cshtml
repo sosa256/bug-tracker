@@ -31,6 +31,12 @@
     </ul>
 }
 
+@if (Model.projOptionList.Count == 0)
+{
+    @* There are no projects to pick from *@
+    <div style="color:red">Error: There are no projects to pick from!<br />Ask an Administrator to create a project</div>
+}
+
 <form asp-controller="Ticket" asp-action="Create" method="post">
 
 
@@ -77,8 +83,12 @@
     @* Buttons *@
     <div class="text-right">
         <a asp-controller="Ticket" asp-action="Manage" class="btn btn-sm btn-outline-danger">Cancel</a>
+        @if (Model.projOptionList.Count != 0)
+        {
+            @* There are projects to pick from. *@
+            <button type="submit" class="btn btn-success">Create</button>
+        }
 
-        <button type="submit" class="btn btn-success">Create</button>
     </div>
 
     @Html.ValidationSummary()

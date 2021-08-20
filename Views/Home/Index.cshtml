@@ -7,4 +7,7 @@
 <div class="text-center">
     <h1 class="display-4">Welcome Home @UserManager.GetUserName(User) :^)</h1>
 </div>
-
+@if(User.IsInRole("NoRole"))
+{ 
+    <p> Hello. Currently you have no role assigned. Please ask an administrator to assign you a role.</p>
+}

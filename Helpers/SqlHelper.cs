@@ -15,8 +15,9 @@ namespace BugTracker.Helpers
         // QUERIES
         //
         // SELECT *
-        // FROM BTUsers;
-        private readonly string selectAllUsersQuery = "SELECT * FROM BTUsers;";
+        // FROM BTUsers
+        // WHERE BTUsers.Role IN( 1, 2, 3, 4 );
+        private readonly string selectAllUsersQuery = "SELECT * FROM BTUsers WHERE BTUsers.Role IN( 1, 2, 3, 4 );";
         // 
         // UPDATE BTUsers
         //     SET BTUsers.Role = @RoleId
@@ -43,8 +44,8 @@ namespace BugTracker.Helpers
         // 
         // SELECT *
         // FROM BTUsers
-        // WHERE BTUsers.stringId = @UserStringId;
-        private readonly string selectUserFromStringIdQuery = "SELECT * FROM BTUsers WHERE BTUsers.stringId = @UserStringId;";
+        // WHERE BTUsers.StringId = @UserStringId;
+        private readonly string selectUserFromStringIdQuery = "SELECT * FROM BTUsers WHERE BTUsers.StringId = @UserStringId;";
         // 
         // DELETE
         // FROM Projects
@@ -265,6 +266,16 @@ namespace BugTracker.Helpers
         // DELETE FROM Comments
         //   WHERE Comments.Id = @CommentId ;
         private readonly string deleteCommentQuery = "DELETE FROM Comments WHERE Comments.Id = @CommentId ;";
+        //
+        // INSERT INTO BTUsers
+        // VALUES( @Id, @StringId, @UserName, @FirstName, @LastName, @Role, NULL );
+        private readonly string insertUserQuery = "INSERT INTO BTUsers VALUES(@Id, @StringId, @UserName, @FirstName, @LastName, @Role, NULL );";
+        //
+        // SELECT BTUsers.Id
+        // FROM BTUsers
+        // ORDER BY BTUsers.Id DESC;
+        private readonly string selectMaxUserIdQuery = "SELECT BTUsers.Id FROM BTUsers ORDER BY BTUsers.Id DESC;";
+
 
 
 
@@ -272,13 +283,20 @@ namespace BugTracker.Helpers
         public SqlHelper()
         {
             _db = DbHelper.GetConnection();
+
+        }
+
+        public SqlHelper(SqlConnection connection)
+        {
+            _db = connection;
+
         }
 
 
 
 
         // METHODS
-        public List<BTUser> SelectAllUsers()
+        public List<BTUser> SelectAllUsersForAssignment()
         {
             return _db.Query<BTUser>(selectAllUsersQuery).ToList();
         }
@@ -607,6 +625,19 @@ namespace BugTracker.Helpers
         public void DeleteComment(int commentId)
         {
             _db.Execute(deleteCommentQuery, new { CommentId = commentId });
+        }
+
+        public void InsertUser(BTUser user)
+        {
+            // Recall that AdminId will be NULL always.
+            _db.Execute(insertUserQuery, user);
+        }
+
+        public int GenerateUserId()
+        {
+            int extractedMax  = _db.Query<int>(selectMaxUserIdQuery).FirstOrDefault();
+            int userId = extractedMax + 1;
+            return userId;
         }
     }
 }

@@ -1,0 +1,54 @@
+﻿@page
+@model BugTracker.Areas.Identity.Pages.Account.DemoLoginModel
+@{
+    ViewData["Title"] = "Demo Login";
+}
+
+<div class="row text-center">
+    <div class="card spur-card card-body col-4">
+        <form method="post">
+            <input type="hidden" name="DemoRole" value="1">
+            <button type="submit" class="btn btn-link text-dark">
+                <div>
+                    <i class="fas fa-user" style="font-size: 10em"></i>
+                </div>
+
+                Administrator
+            </button>
+        </form>
+    </div>
+
+    <div class="col-1"></div>
+
+    <div class="card spur-card card-body col-4">
+        <form id="submitter" method="post">
+            <input type="hidden" name="DemoRole" value="2">
+            <button type="submit" class="btn btn-link text-dark">
+                <div>
+                    <i class="fas fa-user" style="font-size: 10em"></i>
+                </div>
+
+                Developer
+            </button>
+        </form>
+    </div>
+
+</div>
+
+
+<div class="row text-center ">
+    <div class="card spur-card card-body col-4">
+        <form method="post">
+            <input type="hidden" name="DemoRole" value="3">
+            <button type="submit" class="btn btn-link text-dark">
+                <div>
+                    <i class="fas fa-user" style="font-size: 10em"></i>
+                </div>
+
+                Submitter
+            </button>
+        </form>
+    </div>
+</div>
+
+

@@ -12,9 +12,9 @@
     @if (Model.bugTicketReadableList.Count != 0)
     {
         <tr>
+            <td>Title</td>
             <td>Severity</td>
             <td>Status</td>
-            <td>Title</td>
             <td>Project Parent</td>
             <td></td>
         </tr>
@@ -22,23 +22,19 @@
         @foreach (var item in Model.bugTicketReadableList)
         {
             <tr>
-                @* Severity, Status, ProjectParent, Title, btns *@
-                <td>
-                    @* Turn int to string *@
-                    @item.SeverityReadable
-                </td>
-
-                <td>
-                    @* Turn int to string *@
-                    @item.StatusReadable
-                </td>
-
                 <td>
                     @item.Title
                 </td>
 
                 <td>
-                    @* Turn int to string *@
+                    @item.SeverityReadable
+                </td>
+
+                <td>
+                    @item.StatusReadable
+                </td>
+
+                <td>
                     @item.ProjectParentReadable
                 </td>
 

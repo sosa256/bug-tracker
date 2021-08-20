@@ -12,7 +12,7 @@ using System.Collections.Generic;
 
 namespace BugTracker.Controllers
 {
-    [Authorize(Roles = "Administrator, Developer, Submitter")]
+    [Authorize(Roles = "Administrator, Developer, Submitter, DemoAdministrator, DemoDeveloper, DemoSubmitter")]
     public class CommentController : Controller
     {
         // PROPERTIES
@@ -23,10 +23,24 @@ namespace BugTracker.Controllers
 
 
         // CONSTRUCTORS
-        public CommentController(UserManager<BugTrackerUser> userManager)
+        public CommentController(UserManager<BugTrackerUser> userManager, IHttpContextAccessor httpContextAccessor)
         {
-            _sqlHelper = new SqlHelper();
             _userManager = userManager;
+
+            var user = httpContextAccessor.HttpContext.User;
+            bool isDemoAccount = user.IsInRole("DemoAdministrator")
+                || user.IsInRole("DemoDeveloper")
+                || user.IsInRole("DemoSubmitter");
+            if (isDemoAccount)
+            {
+                // Use demo database connection.
+                _sqlHelper = new SqlHelper(DbHelper.GetDemoConnection());
+            }
+            else
+            {
+                // Use actual database connection.
+                _sqlHelper = new SqlHelper();
+            }
         }
 
 
@@ -66,7 +80,7 @@ namespace BugTracker.Controllers
         }
 
 
-        public List<CommentReadable> CommentListToReadable(List<Comment> commentList)
+        public static List<CommentReadable> CommentListToReadable(List<Comment> commentList, SqlHelper sqlHelper)
         {
             List<CommentReadable> ret = new List<CommentReadable>();
 
@@ -78,17 +92,17 @@ namespace BugTracker.Controllers
 
             foreach (Comment item in commentList)
             {
-                ret.Add(CommentToReadable(item));
+                ret.Add(CommentToReadable(item, sqlHelper));
             }
 
             return ret;
         }
 
 
-        public CommentReadable CommentToReadable(Comment comment)
+        public static CommentReadable CommentToReadable(Comment comment, SqlHelper sqlHelper)
         {
             // Get owner's full name.
-            string ownerName = _sqlHelper.GetUserFullName(comment.Owner);
+            string ownerName = sqlHelper.GetUserFullName(comment.Owner);
 
             CommentReadable ret = new CommentReadable(comment, ownerName);
 

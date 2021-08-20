@@ -11,7 +11,7 @@ using System.Collections.Generic;
 
 namespace BugTracker.Controllers
 {
-    [Authorize(Roles = "Administrator")]
+    [Authorize(Roles = "Administrator, DemoAdministrator")]
     public class ProjectController : Controller
     {
         // PROPERTIES
@@ -22,10 +22,24 @@ namespace BugTracker.Controllers
 
 
         // CONSTRUCTORS
-        public ProjectController(UserManager<BugTrackerUser> userManager)
+        public ProjectController(UserManager<BugTrackerUser> userManager, IHttpContextAccessor httpContextAccessor)
         {
-            _sqlHelper = new SqlHelper();
             _userManager = userManager;
+
+            var user = httpContextAccessor.HttpContext.User;
+            bool isDemoAccount = user.IsInRole("DemoAdministrator")
+                || user.IsInRole("DemoDeveloper")
+                || user.IsInRole("DemoSubmitter");
+            if (isDemoAccount)
+            {
+                // Use demo database connection.
+                _sqlHelper = new SqlHelper(DbHelper.GetDemoConnection());
+            }
+            else
+            {
+                // Use actual database connection.
+                _sqlHelper = new SqlHelper();
+            }
         }
 
 
