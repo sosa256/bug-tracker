@@ -33,8 +33,23 @@ namespace BugTracker.Models
             this.UserName = null;
             this.FirstName = null;
             this.LastName = null;
-            this.Role = 7;
+            this.Role = (int) BTUserRoles.NoRole;
             this.Administrator = 0;
+        }
+
+        public BTUser(
+            int id, string stringId, 
+            string username, string firstName, string lastName,
+            int adminId 
+        )
+        {
+            this.Id = id;
+            this.StringId = stringId;
+            this.UserName = username;
+            this.FirstName = firstName;
+            this.LastName = lastName;
+            this.Role = (int)BTUserRoles.NoRole;
+            this.Administrator = adminId;
         }
 
         public BTUser(string username)

@@ -4,6 +4,7 @@ using BugTracker.Models;
 using BugTracker.Models.Readable;
 using BugTracker.ViewModels;
 using Dapper.Contrib.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +14,7 @@ using System.Collections.Generic;
 
 namespace BugTracker.Controllers
 {
+    [Authorize(Roles = "Administrator, Developer, Submitter, DemoAdministrator, DemoDeveloper, DemoSubmitter")]
     public class TicketController : Controller
     {
         // PROPERTIES
@@ -22,13 +24,27 @@ namespace BugTracker.Controllers
 
 
 
-
         // CONSTRUCTORS
-        public TicketController(UserManager<BugTrackerUser> userManager)
+        public TicketController(UserManager<BugTrackerUser> userManager, IHttpContextAccessor httpContextAccessor)
         {
-            _sqlHelper = new SqlHelper();
             _userManager = userManager;
-            _db = DbHelper.GetConnection();
+
+            var user = httpContextAccessor.HttpContext.User;
+            bool isDemoAccount = user.IsInRole("DemoAdministrator")
+                || user.IsInRole("DemoDeveloper")
+                || user.IsInRole("DemoSubmitter");
+            if (isDemoAccount)
+            {
+                // Use demo database connection.
+                _db = DbHelper.GetDemoConnection();
+                _sqlHelper = new SqlHelper(_db);
+            }
+            else
+            {
+                // Use actual database connection.
+                _db = DbHelper.GetConnection();
+                _sqlHelper = new SqlHelper();
+            }
         }
 
 
@@ -125,15 +141,16 @@ namespace BugTracker.Controllers
             
             // Get properties of view model.
             Project projectParent = _sqlHelper.SelectProjectFromTicket(ticketId);
-            CommentController commentController = new CommentController(_userManager);
-            List<CommentReadable> commentList = commentController.CommentListToReadable (_sqlHelper.SelectCommentsFromTicket(ticketId));
+            List<CommentReadable> commentList = CommentController.CommentListToReadable (_sqlHelper.SelectCommentsFromTicket(ticketId), _sqlHelper);
 
             TicketDetailsViewModel model = new TicketDetailsViewModel(currTicketReadable, projectParent, commentList);
+            model.UserViewingId = _sqlHelper.SelectUserFromStringId(_userManager.GetUserId(User)).Id;
 
             return View(model);
         } // Details(int)
 
 
+        // For when creating a comment fails.
         public ActionResult DetailsError(string erroneousMsg, int ticketId)
         {
             // Verify the Ticket is valid.
@@ -161,24 +178,27 @@ namespace BugTracker.Controllers
 
             // Get properties of view model.
             Project projectParent = _sqlHelper.SelectProjectFromTicket(ticketId);
-            CommentController commentController = new CommentController(_userManager);
-            List<CommentReadable> commentList = commentController.CommentListToReadable(_sqlHelper.SelectCommentsFromTicket(ticketId));
+            List<CommentReadable> commentList = CommentController.CommentListToReadable(_sqlHelper.SelectCommentsFromTicket(ticketId), _sqlHelper);
 
             TicketDetailsViewModel model = new TicketDetailsViewModel(currTicketReadable, projectParent, commentList);
             model.ErrorExists = true;
             model.newComment.Msg = erroneousMsg;
+            model.UserViewingId = _sqlHelper.SelectUserFromStringId(_userManager.GetUserId(User)).Id;
 
             return View("Details", model);
         }
 
-
-        public ActionResult Details(TicketDetailsViewModel model)
-        {
-            return View(model);
-        }
+        // Forgot what this does.
+        // Will remain commented until something breaks that needs it or
+        // I remember what it was for (whichever comes first).
+        //public ActionResult Details(TicketDetailsViewModel model)
+        //{
+        //    return View(model);
+        //}
 
         // GET: Ticket/Close/5
         [HttpGet]
+        [Authorize(Roles = "Administrator, Developer, DemoAdministrator, DemoDeveloper")]
         public ActionResult Close(int ticketId)
         {
             // Verify the Ticket is valid.
@@ -206,6 +226,7 @@ namespace BugTracker.Controllers
 
         // POST: Ticket/Close/5
         [HttpPost]
+        [Authorize(Roles = "Administrator, Developer, DemoAdministrator, DemoDeveloper")]
         [ValidateAntiForgeryToken]
         public ActionResult Close(int ticketId, IFormCollection collection)
         {
@@ -247,6 +268,10 @@ namespace BugTracker.Controllers
                 // Solution is permanent.
                 // Make the ticket not current so it doesn't appear on Manage.
                 _sqlHelper.MakeTicketNotCurrent(ticketId);
+
+                // Delete any temporary solutions it may have.
+                _sqlHelper.DeleteClosedTicket(_sqlHelper.SelectTicket(ticketId).ProjectParent, ticketId);
+
             }
 
             // Update ticket Status to TempSolution or Complete.
@@ -261,7 +286,6 @@ namespace BugTracker.Controllers
                 solution, isTempSolution, DateTime.Now,
                 _sqlHelper.SelectUserFromStringId( _userManager.GetUserId(User) ).Id
             );
-
             // Didn't turn it into a _sqlHelper method b/c it's already one line.
             _db.Insert<ClosedTicket>(closedTicket);
 
@@ -457,7 +481,22 @@ namespace BugTracker.Controllers
 
             _sqlHelper.UpdateTicket(updatedTicket, outdatedTicketId);
 
-            return RedirectToAction("Manage");
+            // Move all the comments from the old ticket to the new one.
+            List<Comment> commentList = _sqlHelper.SelectCommentsFromTicket(outdatedTicketId);
+            foreach(Comment item in commentList)
+            {
+                // Delete old comment in myDB.
+                _sqlHelper.DeleteComment(item.Id);
+
+                // Update it with new ticket.
+                item.TicketId = updatedTicketId;
+
+                // Insert it into myDB.
+                _sqlHelper.InsertComment(item);
+            }
+
+            var routeValues = new { ticketId = updatedTicketId };
+            return RedirectToAction("Details", routeValues);
         } // END OF: Edit(IFormCollection)
 
 
@@ -465,11 +504,28 @@ namespace BugTracker.Controllers
         // TODO: Make this avalible only to original owner and Admin
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int ticketId)
+        public IActionResult Delete(IFormCollection collection)
         {
+            // Authorize or deny action. 
+            // Can only delete if you are the Admin or the og owner.
+            int userViewingId = Int32.Parse(collection["UserViewingId"]);
+            BTUser user = _sqlHelper.SelectUserFromStringId(_userManager.GetUserId(User));
+            bool authorizedAction = (user.Role == (int)BTUserRoles.Administrator) || (user.Id == userViewingId);
+            if ( ! authorizedAction)
+            {
+                return Content("This is an unauthorized action");
+            }
+
             // ValidateAntiForgeryToken makes sure ticketId was not tampered with.
-            // Delete Ticket.
-            _sqlHelper.DeleteTicket(ticketId);
+            int ticketId = Int32.Parse(collection["currTicketReadable.Id"]);
+
+            // Also delete all Tickets in history.
+            Ticket ticketToBeDeleted = _sqlHelper.SelectTicket(ticketId);
+            List<Ticket> listToBeDeleted = _sqlHelper.SelectTicketHistory(ticketToBeDeleted.HistoryId);
+            foreach (Ticket item in listToBeDeleted)
+            {
+                _sqlHelper.DeleteTicket(item.Id);
+            }
 
             return RedirectToAction("Manage");
         }

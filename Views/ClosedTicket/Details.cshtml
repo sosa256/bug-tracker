@@ -11,9 +11,13 @@
 @* Buttons *@
 <div class="input-group pb-3">
     <a asp-controller="ClosedTicket" asp-action="Index" class="btn btn-sm btn-outline-primary input-group-append">Back</a>
-    <form asp-controller="ClosedTicket" asp-action="Delete" asp-route-ticketId="@Model.closedTicketReadable.TicketClosed" asp-route-projectId="@Model.closedTicketReadable.ProjectParent" method="post" class="pl-2 pr-2">
-        <button class="btn btn-sm btn-outline-danger input-group-append" onclick="return confirm('Are you sure? This will delete the original Ticket as well.');">Delete</button>
-    </form>
+    @* Only show if they are an admin*@
+    @if ( User.IsInRole("Administrator") || User.IsInRole("DemoAdministrator"))
+    {
+        <form asp-controller="ClosedTicket" asp-action="Delete" asp-route-ticketId="@Model.closedTicketReadable.TicketClosed" asp-route-projectId="@Model.closedTicketReadable.ProjectParent" method="post" class="pl-2 pr-2">
+            <button class="btn btn-sm btn-outline-danger input-group-append" onclick="return confirm('Are you sure? This will delete the original Ticket as well.');">Delete</button>
+        </form>
+    }
 </div>
 
 @* General info card *@

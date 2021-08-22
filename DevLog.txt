@@ -224,30 +224,30 @@ BugTicketController.cs cleaned up with validations added.
 BugTicketController.cs renamed to TicketController.cs
 BugTicketViewModels renamed to TicketViewModels
 
-
-08/09/2021 2:10 PM
+08/10/2021 4:19 PM
 Rest of the controllers are now cleaned up and have server-side verification.
+
+08/10/2021 6:31 PM
+Authorization added to all the controllers.
+The application is ready for deployment.
+
+08/13/2021 8:38 AM
+Comments will update when a ticket is edited so that they are still viewable.
+
+08/20/2021 12:54 PM
+Demo Accounts fully implemented.
 
 
 
 
 TODO
-use the Authorization to restric actions
-make create role action inaccessible
-make role assignment only for Administrator role
+Allow ManageSpecific to be accesible via a drop down with a list of the avalible projects.
 
 use https://www.datatables.net/ for nice DB tables
-
-make a helper with a list of query actions
 
 Add validations to login and show errors on a failed login (pw or un was bad)
 Add validations to create project
 
 create a cronjob or something to make Ticket Status change from New to InProgress after 24hrs
 
-Fix the Get/Post comments
 
-make sure to process ALL user input before using it
-make some asp-route-dataName into hidden form fields
-
-clean up code

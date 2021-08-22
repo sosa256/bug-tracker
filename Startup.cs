@@ -1,6 +1,10 @@
+using BugTracker.Areas.Identity.Data;
+using BugTracker.Data;
+using BugTracker.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -28,11 +32,24 @@ namespace BugTracker
  
             services.AddControllersWithViews()
              .AddRazorRuntimeCompilation();
+
+            // For accessing user incontroller constructors. source: https://stackoverflow.com/questions/36641338/how-to-get-current-user-in-asp-net-core
+            services.AddHttpContextAccessor();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(
+            IApplicationBuilder app, 
+            IWebHostEnvironment env,
+            // For seeding ASP Users.
+            UserManager<BugTrackerUser> userManager,
+            RoleManager<IdentityRole> roleManager
+        )
         {
+            //IdentityDataInitializer.SeedDb();
+            IdentityDataInitializer.SeedRoles(roleManager);
+            IdentityDataInitializer.SeedUsers(userManager);
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

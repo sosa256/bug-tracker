@@ -11,12 +11,23 @@
 
 @* Buttons *@
 <div class="input-group pb-3">
-    <a asp-controller="Ticket" asp-action="Edit" asp-route-ticketId="@Model.currTicketReadable.Id" class="btn btn-sm btn-outline-success input-group-append ">Edit</a>
-    @* TODO: Make this action only avalible to the owner and Admins through here and the controller. *@
-    <form asp-controller="Ticket" asp-action="Delete" asp-route-ticketId="@Model.currTicketReadable.Id" method="post" class="pl-2 pr-2">
-        <button type="submit" class="btn btn-sm btn-outline-danger input-group-append" onclick="return confirm('Are you sure?');">Delete</button>
-    </form>
-    @*<a asp-controller="Ticket" asp-action="Delete" asp-route-ticketId="@Model.currTicketReadable.Id" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?');">Delete</a>*@
+    @* Edit (owner only)*@
+    @if (Model.currTicketReadable.OpenedBy == Model.UserViewingId)
+    {
+        <a asp-controller="Ticket" asp-action="Edit" asp-route-ticketId="@Model.currTicketReadable.Id" class="btn btn-sm btn-outline-success input-group-append ">Edit</a>
+    }
+
+    @* Delete (owner/admin only) *@
+    @if (Model.currTicketReadable.OpenedBy == Model.UserViewingId || User.IsInRole("Administrator") || User.IsInRole("DemoAdministrator"))
+    {
+        <form asp-controller="Ticket" asp-action="Delete" method="post" class="pl-2 pr-2">
+            @Html.HiddenFor(model => Model.currTicketReadable.Id)
+            @Html.HiddenFor(model => Model.UserViewingId)
+            <button type="submit" class="btn btn-sm btn-outline-danger input-group-append" onclick="return confirm('Are you sure?');">Delete</button>
+        </form>
+    }
+
+    @* History *@
     <a asp-controller="Ticket" asp-action="History" asp-route-historyId="@Model.currTicketReadable.HistoryId" class="btn btn-sm btn-outline-primary input-group-append">History</a>
 </div>
 
@@ -67,7 +78,12 @@
 
         @* Buttons *@
         <div class="text-right">
-            <a asp-controller="Ticket" asp-action="Close" asp-route-ticketId="@Model.currTicketReadable.Id" class="btn btn-sm btn-outline-warning">Close</a>
+            
+            @if (User.IsInRole("Administrator") || User.IsInRole("Developer") 
+                || User.IsInRole("DemoAdministrator") || User.IsInRole("DemoDeveloper"))
+            {
+                <a asp-controller="Ticket" asp-action="Close" asp-route-ticketId="@Model.currTicketReadable.Id" class="btn btn-sm btn-outline-warning">Close</a>
+            }
             <a asp-controller="Ticket" asp-action="Manage" class="btn btn-sm btn-outline-danger">Back</a>
         </div>
 
@@ -87,11 +103,11 @@
 {
     <div class="collapse show" id="CommentForm" style="">
         <div class="card card-body">
-                <ul style="color:red">
-                    <li>
-                        @Model.MsgError
-                    </li>
-                </ul>
+            <ul style="color:red">
+                <li>
+                    @Model.MsgError
+                </li>
+            </ul>
             <form asp-controller="Comment" asp-action="Create" method="post">
                 @Html.HiddenFor(model => Model.currTicketReadable.Id)
                 @* Textbox *@
@@ -149,25 +165,33 @@ else
                 @item.Msg
             </div>
 
-            @* Row three *@
-            <div class="text-right">
-                @* three dot menu *@
-                @* Only show if they are the owner *@
-                <div class="dropdown show">
-                    <a href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fas fa-caret-down text-dark "></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                        <a class="dropdown-item" asp-controller="Comment" asp-action="Edit" asp-route-commentId="@item.Id" asp-route-returnticketId="@Model.currTicketReadable.Id">Edit</a>
-                        <form asp-controller="Comment" asp-action="Delete" method="post" class="dropdown-item">
-                            @Html.HiddenFor(model => item.Id)
-                            @Html.HiddenFor(model => Model.currTicketReadable.Id)
-                            <button type="submit" class="btn  text-dark text-left pl-0" onclick="return confirm('Are you sure?');">Delete</button>
-                        </form>
-                        @*<a class="dropdown-item" asp-controller="Comment" asp-action="Delete" asp-route-commentId="@item.Id" asp-route-returnticketId="@Model.currTicketReadable.Id">Delete</a>*@
+            @* menu *@
+            @* Only show if they are the owner or admin*@
+            @if (Model.currTicketReadable.OpenedBy == Model.UserViewingId || User.IsInRole("Administrator") || User.IsInRole("DemoAdministrator"))
+            {
+                <div class="text-right">
+                    <div class="dropdown show">
+                        <a href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-caret-down text-dark "></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                            @* only the owner can edit *@
+                            @if (Model.currTicketReadable.OpenedBy == Model.UserViewingId)
+                            {
+                                <a class="dropdown-item" asp-controller="Comment" asp-action="Edit" asp-route-commentId="@item.Id" asp-route-returnticketId="@Model.currTicketReadable.Id">Edit</a>
+                            }
+                            <form asp-controller="Comment" asp-action="Delete" method="post" class="dropdown-item">
+                                @Html.HiddenFor(model => item.Id)
+                                @Html.HiddenFor(model => Model.currTicketReadable.Id)
+                                @Html.HiddenFor(model => Model.UserViewingId)
+                                <button type="submit" class="btn  text-dark text-left pl-0" onclick="return confirm('Are you sure?');">Delete</button>
+                            </form>
+                            @*<a class="dropdown-item" asp-controller="Comment" asp-action="Delete" asp-route-commentId="@item.Id" asp-route-returnticketId="@Model.currTicketReadable.Id">Delete</a>*@
+                        </div>
                     </div>
                 </div>
-            </div>
+            }
+
 
         </div>
     }

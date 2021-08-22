@@ -8,6 +8,7 @@ namespace BugTracker.ViewModels
         public Comment currComment { get; set; }
         public int ReturnTicketId { get; set; }
         public bool ErrorExists = false;
+        public int UserViewingId { get; set; }
 
 
 
